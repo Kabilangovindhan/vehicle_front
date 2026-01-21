@@ -1,14 +1,13 @@
 import React from 'react'
 
+import Login from './assets/components/Login/Login'
 function App() {
   
 
   return (
     <>
-      <div className=''> kabilan</div>
-       <div className=''> kabilan</div>
-      <div>  </div>
-        
+     
+      <Login />
     </>
   )
 }
