@@ -6,49 +6,30 @@ function Customers() {
     { id: 2, name: "Suresh", phone: "9123456780", email: "suresh@gmail.com" },
   ]);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-  });
-
+  const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
   const [editId, setEditId] = useState(null);
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Add or Update customer
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (editId) {
-      // Update
-      setCustomers(
-        customers.map((c) =>
-          c.id === editId ? { ...c, ...formData } : c
-        )
-      );
+      setCustomers(customers.map((c) => (c.id === editId ? { ...c, ...formData } : c)));
       setEditId(null);
     } else {
-      // Add
-      setCustomers([
-        ...customers,
-        { id: Date.now(), ...formData },
-      ]);
+      setCustomers([...customers, { id: Date.now(), ...formData }]);
     }
-
     setFormData({ name: "", phone: "", email: "" });
   };
 
-  // Edit customer
   const handleEdit = (customer) => {
     setFormData(customer);
     setEditId(customer.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Better UX for mobile
   };
 
-  // Delete customer
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to delete this customer?")) {
       setCustomers(customers.filter((c) => c.id !== id));
@@ -56,19 +37,20 @@ function Customers() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Customer Management</h1>
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-slate-800">Customer Management</h1>
 
-      {/* FORM */}
+      {/* FORM SECTION */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-4 rounded-lg shadow mb-6 max-w-xl"
+        className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8"
       >
-        <h2 className="font-semibold mb-3">
-          {editId ? "Edit Customer" : "Add Customer"}
+        <h2 className="font-semibold text-lg mb-4 text-slate-700">
+          {editId ? "📝 Edit Customer" : "➕ Add New Customer"}
         </h2>
 
-        <div className="grid grid-cols-1 gap-3">
+        {/* Responsive Grid: 1 col on mobile, 3 cols on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <input
             type="text"
             name="name"
@@ -76,9 +58,8 @@ function Customers() {
             value={formData.name}
             onChange={handleChange}
             required
-            className="border p-2 rounded"
+            className="border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
-
           <input
             type="text"
             name="phone"
@@ -86,9 +67,8 @@ function Customers() {
             value={formData.phone}
             onChange={handleChange}
             required
-            className="border p-2 rounded"
+            className="border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
-
           <input
             type="email"
             name="email"
@@ -96,53 +76,70 @@ function Customers() {
             value={formData.email}
             onChange={handleChange}
             required
-            className="border p-2 rounded"
+            className="border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
-
-          <button
-            type="submit"
-            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-          >
-            {editId ? "Update Customer" : "Add Customer"}
-          </button>
+          
+          <div className="md:col-span-3 flex justify-end">
+            <button
+              type="submit"
+              className={`w-full md:w-auto px-6 py-2.5 rounded-lg font-medium text-white transition-colors ${
+                editId ? "bg-orange-500 hover:bg-orange-600" : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {editId ? "Update Customer" : "Add Customer"}
+            </button>
+          </div>
         </div>
       </form>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-lg shadow overflow-x-auto">
+      {/* TABLE / LIST SECTION */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        {/* Desktop Table Header (Hidden on Mobile) */}
         <table className="w-full border-collapse">
-          <thead className="bg-slate-100">
-            <tr>
-              <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Phone</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Actions</th>
+          <thead className="bg-slate-50 hidden md:table-header-group">
+            <tr className="text-slate-600 uppercase text-xs font-bold tracking-wider">
+              <th className="p-4 text-left">Customer</th>
+              <th className="p-4 text-left">Contact Info</th>
+              <th className="p-4 text-right">Actions</th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {customers.length === 0 ? (
               <tr>
-                <td colSpan="4" className="p-4 text-center text-slate-500">
-                  No customers found
+                <td colSpan="3" className="p-10 text-center text-slate-400">
+                  No customers found. Start by adding one above.
                 </td>
               </tr>
             ) : (
               customers.map((c) => (
-                <tr key={c.id} className="border-t">
-                  <td className="p-3">{c.name}</td>
-                  <td className="p-3">{c.phone}</td>
-                  <td className="p-3">{c.email}</td>
-                  <td className="p-3 space-x-2">
+                <tr key={c.id} className="flex flex-col md:table-row p-4 md:p-0 hover:bg-slate-50 transition-colors">
+                  {/* Name Column */}
+                  <td className="md:p-4 text-slate-900 font-medium md:font-normal">
+                    <span className="block md:hidden text-xs text-slate-400 uppercase font-bold mb-1">Name</span>
+                    {c.name}
+                  </td>
+                  
+                  {/* Contact Column */}
+                  <td className="md:p-4 mt-2 md:mt-0">
+                    <span className="block md:hidden text-xs text-slate-400 uppercase font-bold mb-1">Contact</span>
+                    <div className="flex flex-col text-sm text-slate-600">
+                      <span>{c.phone}</span>
+                      <span className="text-slate-400">{c.email}</span>
+                    </div>
+                  </td>
+
+                  {/* Actions Column */}
+                  <td className="md:p-4 mt-4 md:mt-0 md:text-right flex md:table-cell gap-2 justify-end">
                     <button
                       onClick={() => handleEdit(c)}
-                      className="px-3 py-1 bg-yellow-500 text-white rounded"
+                      className="flex-1 md:flex-none px-4 py-2 bg-slate-100 text-slate-700 md:bg-transparent md:text-yellow-600 hover:bg-yellow-50 rounded-lg font-medium transition-colors"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(c.id)}
-                      className="px-3 py-1 bg-red-600 text-white rounded"
+                      className="flex-1 md:flex-none px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors"
                     >
                       Delete
                     </button>
