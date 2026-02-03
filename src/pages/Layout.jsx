@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { Menu, Users, Car, Calendar, LayoutDashboard } from "lucide-react";
+import { Menu, Users, Car, LayoutDashboard, Book, Calendar } from "lucide-react";
 
 function Dashboard() {
 	const [open, setOpen] = useState(false);
@@ -17,28 +17,48 @@ function Dashboard() {
 				className={`bg-slate-900 text-white w-64 p-5 ${open ? "block" : "hidden"
 					} md:block`}
 			>
-				<h1 className="text-xl font-bold mb-6">AutoServe</h1>
+				<h1 className="text-xl font-bold mb-6">AutoCare</h1>
 
 				<nav className="space-y-2">
 					<NavLink to="/layout/dashboard" end className={navClass}>
 						<LayoutDashboard size={18} /> Dashboard
 					</NavLink>
 
-					<NavLink to="/layout/users" className={navClass}>
-						<Users size={18} /> Users
-					</NavLink>
 
 					<NavLink to="/layout/customers" className={navClass}>
 						<Users size={18} /> Customers
 					</NavLink>
 
-					<NavLink to="/layout/vehicles" className={navClass}>
+
+					<NavLink to="/layout/vehicleDetails" className={navClass}>
 						<Car size={18} /> Vehicles
 					</NavLink>
 
-					<NavLink to="/dashboard/service-booking" className={navClass}>
-						<Calendar size={18} /> Service Booking
+
+					<NavLink to="/layout/users" className={navClass}>
+						<Users size={18} /> Users&Admin
 					</NavLink>
+
+
+					<NavLink to="/layout/service-update" className={navClass}>
+						<Book size={18} />Service Update
+					</NavLink>
+
+
+					<NavLink to="/layout/payment" className={navClass}>
+						<Book size={18} />Payment
+					</NavLink>
+
+					
+					<NavLink to="/layout/reports" className={navClass}>
+						<Calendar size={18} /> Reports
+					</NavLink>
+
+
+
+
+
+
 				</nav>
 			</aside>
 
