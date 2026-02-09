@@ -66,13 +66,13 @@ function Dashboard() {
 
 
 					<NavLink to="/layout/users" className={navClass} onClick={() => setOpen(false)}>
-						<Users size={18} /> Users & Admin
+						<Users size={18} />Customer Info
 					</NavLink>
 
 					
-					<NavLink to="/layout/customers" className={navClass} onClick={() => setOpen(false)}>
+					{/* <NavLink to="/layout/customers" className={navClass} onClick={() => setOpen(false)}>
 						<Users size={18} /> Customers
-					</NavLink>
+					</NavLink> */}
 
 
 					<NavLink
