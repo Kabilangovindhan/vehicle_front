@@ -1,184 +1,245 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Phone, Mail, Lock, User, MapPin, ArrowRight, Loader2 } from "lucide-react";
+import {
+  ShieldCheck,
+  ArrowRight,
+  Loader2,
+  Eye,
+  EyeOff
+} from "lucide-react";
 
 function Auth() {
-    const navigate = useNavigate();
-    const [isRegistering, setIsRegistering] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    
-    const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
-        phone: "",
-        altPhone: "",
-        address: "",
-        password: ""
-    });
+  const navigate = useNavigate();
 
-    const bgImage = "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?q=80&w=2000&auto=format&fit=crop";
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const formatIndianPhone = (value) => {
-        const digits = value.replace(/\D/g, "");
-        const mainDigits = digits.startsWith("91") ? digits.slice(2) : digits;
-        const truncated = mainDigits.slice(0, 10);
-        
-        if (truncated.length > 5) {
-            return `+91 ${truncated.slice(0, 5)}-${truncated.slice(5)}`;
-        } else if (truncated.length > 0) {
-            return `+91 ${truncated}`;
-        }
-        return truncated;
-    };
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    address: "",
+    password: ""
+  });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "phone" || name === "altPhone") {
-            setFormData({ ...formData, [name]: formatIndianPhone(value) });
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
-    };
+  const bgImage =
+    "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?q=80&w=2000&auto=format&fit=crop";
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            if (!isRegistering) navigate("/layout");
-            else alert("Account Created for Auto Care!");
-        }, 1500);
-    };
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    return (
-        <div className="relative min-h-[100dvh] w-full flex items-center justify-center font-sans selection:bg-emerald-500/30 overflow-x-hidden">
-            
-            {/* BACKGROUND: Low Opacity for Clear Engine View */}
-            <div 
-                className="fixed inset-0 bg-cover bg-center bg-no-repeat z-0"
-                style={{
-                    backgroundImage: `linear-gradient(to bottom, rgba(2, 6, 23, 0.4), rgba(2, 6, 23, 0.7)), url('${bgImage}')`,
-                }}
-            >
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5" />
-            </div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-            <div className="relative z-10 w-full max-w-[1100px] mx-auto px-6 py-10 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-                
-                {/* Branding Side */}
-                <div className="w-full lg:w-1/2 text-center lg:text-left">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 mb-6 backdrop-blur-md">
-                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                        <span className="text-[10px] font-black text-emerald-300 uppercase tracking-widest">Premium Auto Services</span>
-                    </div>
-                    
-                    <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-4 drop-shadow-lg">
-                        AUTO <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">CARE</span>
-                    </h1>
-                    
-                    <p className="text-white/80 text-lg max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
-                        {isRegistering 
-                            ? "Register your vehicle for world-class maintenance and real-time tracking."
-                            : "Welcome back. Log in to access your garage and service history."}
-                    </p>
-                </div>
+    setTimeout(() => {
+      setIsLoading(false);
 
-                {/* CARD: Clean Glass-morphism */}
-                <div className="w-full lg:w-[480px]">
-                    <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-2xl overflow-hidden transition-all duration-500">
-                        
-                        <div className="p-8 sm:p-10">
-                            <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                                {isRegistering ? "Create Profile" : "Secure Login"}
-                                {isLoading && <Loader2 className="w-5 h-5 animate-spin text-emerald-400" />}
-                            </h2>
+      if (isForgotPassword) {
+        alert("Password reset link sent to email!");
+        setIsForgotPassword(false);
+        return;
+      }
 
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                {isRegistering ? (
-                                    <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-bottom-3 duration-500">
-                                        <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-100/50" />
-                                            <input name="fullName" required placeholder="Full Name" className="professional-input" onChange={handleChange} />
-                                        </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <div className="relative">
-                                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-100/50" />
-                                                <input name="phone" required placeholder="Mobile" value={formData.phone} className="professional-input text-xs" onChange={handleChange} />
-                                            </div>
-                                            <div className="relative">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-100/50" />
-                                                <input name="email" type="email" required placeholder="Email" className="professional-input text-xs" onChange={handleChange} />
-                                            </div>
-                                        </div>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-4 top-4 w-5 h-5 text-emerald-100/50" />
-                                            <textarea name="address" rows="2" placeholder="Primary Address" className="professional-input pl-12 pt-4 resize-none" onChange={handleChange} />
-                                        </div>
-                                        <div className="relative">
-                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-100/50" />
-                                            <input name="password" type="password" required placeholder="Create Password" className="professional-input" onChange={handleChange} />
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-500">
-                                        <div className="relative">
-                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-100/50" />
-                                            <input type="email" required placeholder="Email Address" className="professional-input" />
-                                        </div>
-                                        <div className="relative">
-                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-100/50" />
-                                            <input type="password" required placeholder="Password" className="professional-input" />
-                                        </div>
-                                    </div>
-                                )}
+      if (!isRegistering) navigate("/layout/dashboard");
+      else alert("Account Created!");
+    }, 1200);
+  };
 
-                                <button 
-                                    disabled={isLoading}
-                                    className="w-full bg-emerald-500/90 hover:bg-emerald-400 text-slate-950 font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-6 shadow-xl shadow-emerald-500/10"
-                                >
-                                    {/* UPDATED LABEL */}
-                                    <span>{isRegistering ? "Register Now" : "Login"}</span>
-                                    {!isLoading && <ArrowRight className="w-5 h-5" />}
-                                </button>
-                            </form>
+  return (
+    <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6">
 
-                            <div className="mt-8 text-center border-t border-white/10 pt-6">
-                                <button 
-                                    onClick={() => setIsRegistering(!isRegistering)}
-                                    className="text-sm font-bold text-white/60 hover:text-emerald-400 transition-colors"
-                                >
-                                    {/* UPDATED TOGGLE LABELS */}
-                                    {isRegistering ? "Already a member? Sign In" : "New to Auto Care? Register"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      {/* BACKGROUND */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 sm:scale-105 lg:scale-100"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(2,6,23,.65), rgba(2,6,23,.85)),
+              url(${bgImage})
+            `
+          }}
+        />
+      </div>
 
-            <style>{`
-                .professional-input {
-                    width: 100%;
-                    padding: 1rem 1rem 1rem 3.5rem;
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 1.25rem;
-                    color: white;
-                    outline: none;
-                    transition: all 0.3s ease;
-                    font-size: 0.875rem;
-                }
-                .professional-input:focus {
-                    background: rgba(255, 255, 255, 0.12);
-                    border-color: rgba(16, 185, 129, 0.5);
-                    box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-                }
-                .professional-input::placeholder {
-                    color: rgba(255, 255, 255, 0.4);
-                }
-            `}</style>
+      {/* MAIN */}
+      <div className="relative z-10 w-full max-w-6xl flex flex-col lg:flex-row items-center gap-8 sm:gap-10 lg:gap-16 py-8 sm:py-10">
+
+        {/* BRAND */}
+        <div className="w-full lg:w-1/2 text-white text-center lg:text-left">
+          <ShieldCheck className="text-emerald-400 mb-3 mx-auto lg:mx-0" size={36} />
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black mb-3">
+            AUTO CARE
+          </h1>
+
+          <p className="text-white/70 text-sm sm:text-base max-w-md mx-auto lg:mx-0">
+            {isForgotPassword
+              ? "Reset your password securely."
+              : isRegistering
+              ? "Create your service account."
+              : "Welcome back. Access your dashboard."}
+          </p>
         </div>
-    );
+
+        {/* CARD */}
+        <div className="w-full max-w-md lg:max-w-[450px] bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl">
+
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">
+            {isForgotPassword
+              ? "Forgot Password"
+              : isRegistering
+              ? "Create Account"
+              : "Secure Login"}
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+
+            {/* ===== FORGOT PASSWORD ===== */}
+            {isForgotPassword && (
+              <div className="border-b border-white/30 focus-within:border-emerald-400 pb-2">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your registered Email"
+                  className="w-full bg-transparent outline-none text-white placeholder-white/40 text-sm sm:text-base"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
+
+            {/* ===== LOGIN ===== */}
+            {!isRegistering && !isForgotPassword && (
+              <>
+                <div className="border-b border-white/30 focus-within:border-emerald-400 pb-2">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    className="w-full bg-transparent outline-none text-white placeholder-white/40"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="border-b border-white/30 focus-within:border-emerald-400 pb-2 flex items-center">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Password"
+                    className="w-full bg-transparent outline-none text-white placeholder-white/40"
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-white/60 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+
+                <div className="text-right">
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-xs text-white/60 hover:text-emerald-400"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* ===== REGISTER ===== */}
+            {isRegistering && !isForgotPassword && (
+              <div className="space-y-4">
+                <input name="fullName" placeholder="Full Name" className="register-input" onChange={handleChange} required />
+                <input name="phone" placeholder="Phone Number" className="register-input" onChange={handleChange} required />
+                <input name="email" placeholder="Email" className="register-input" onChange={handleChange} required />
+
+                <textarea name="address" placeholder="Address" className="register-input h-24" onChange={handleChange} />
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Create Password"
+                    className="register-input pr-12"
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* BUTTON */}
+            <button className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 sm:py-4 rounded-xl flex justify-center items-center gap-2">
+              {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
+              {!isLoading && <ArrowRight size={18} />}
+            </button>
+          </form>
+
+          {/* FOOTER TOGGLES */}
+          {!isForgotPassword && (
+            <button
+              onClick={() => setIsRegistering(!isRegistering)}
+              className="text-white/60 hover:text-emerald-400 text-sm mt-6 sm:mt-8"
+            >
+              {isRegistering ? "Already have account? Login" : "New User? Register"}
+            </button>
+          )}
+
+          {isForgotPassword && (
+            <button
+              onClick={() => setIsForgotPassword(false)}
+              className="text-white/60 hover:text-emerald-400 text-sm mt-6"
+            >
+              Back to Login
+            </button>
+          )}
+
+        </div>
+      </div>
+
+      <style>{`
+        .register-input {
+          width:100%;
+          padding:14px;
+          border-radius:14px;
+          background: rgba(255,255,255,.08);
+          border:1px solid rgba(255,255,255,.15);
+          color:white;
+          outline:none;
+          font-size:14px;
+        }
+
+        .register-input:focus{
+          border-color:#10b981;
+          background:rgba(255,255,255,.15);
+        }
+      `}</style>
+
+    </div>
+  );
 }
 
 export default Auth;
+
+
+
+
+
