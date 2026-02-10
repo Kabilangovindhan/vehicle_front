@@ -97,7 +97,7 @@ function Auth() {
 
 					<div className="mb-10 text-center lg:text-left">
 						<h2 className="text-2xl font-bold text-white mb-2">
-							{isForgotPassword ? "Reset Password" : isRegistering ? "Register Workshop" : "System Access"}
+							{isForgotPassword ? "Reset Password" : isRegistering ? "Register" : "System Access"}
 						</h2>
 						<div className="h-1 w-12 bg-indigo-500 rounded-full lg:mx-0 mx-auto" />
 					</div>
@@ -151,7 +151,7 @@ function Auth() {
 										</div>
 										<div>
 											<label className="text-[10px] uppercase tracking-widest text-indigo-500 font-bold ml-2 mb-2.5 block">Phone Number</label>
-											<input name="phone" placeholder="+1 (555) 000-0000" className={regInputClasses} onChange={handleChange} required />
+											<input name="phone" placeholder="+91 " className={regInputClasses} onChange={handleChange} required />
 										</div>
 									</div>
 
@@ -184,10 +184,10 @@ function Auth() {
 								</div>
 
 								<div>
-									<label className="text-[10px] uppercase tracking-widest text-indigo-500 font-bold ml-2 mb-2.5 block">Workshop Address</label>
+									<label className="text-[10px] uppercase tracking-widest text-indigo-500 font-bold ml-2 mb-2.5 block">Address</label>
 									<textarea
 										name="address"
-										placeholder="Enter your full business address..."
+										placeholder="Enter your full address..."
 										className={`${regInputClasses} h-24 resize-none scrollbar-thin scrollbar-thumb-white/10`}
 										onChange={handleChange}
 									/>

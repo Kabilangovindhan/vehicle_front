@@ -15,7 +15,7 @@ function Layout() {
 
 	const navItems = [
 		{ path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-		{ path: "/layout/customers", label: "Customer Info", icon: Users },
+		{ path: "/layout/customers", label: "UserInfo", icon: Users },
 		{ path: "/layout/vechicleMaster", label: "Vehicle Master", icon: Car },
 		{ path: "/layout/service-update", label: "Service Update", icon: FileText },
 		{ path: "/layout/payment", label: "Payments", icon: CreditCard },
@@ -141,13 +141,7 @@ function Layout() {
 
 				{/* Content Area */}
 				<main className="flex-1 p-6 md:p-10 overflow-y-auto">
-					<div className="max-w-7xl mx-auto">
-						<div className="mb-8">
-							<h2 className="text-2xl font-bold text-slate-800 capitalize tracking-tight">
-								{location.pathname.split('/').pop().replace('-', ' ')}
-							</h2>
-							<p className="text-sm text-slate-500">Welcome back! Here is what's happening today.</p>
-						</div>
+					<div className="max-w-7xl mx-auto"> 	
 						<div className="md:hidden h-14" />
 						<Outlet />
 					</div>
