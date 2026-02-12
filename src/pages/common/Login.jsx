@@ -5,7 +5,6 @@ import { ArrowRight, Loader2, Eye, EyeOff, Car } from "lucide-react";
 function Auth() {
 
 	const navigate = useNavigate();
-
 	const [isRegistering, setIsRegistering] = useState(false);
 	const [isForgotPassword, setIsForgotPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);

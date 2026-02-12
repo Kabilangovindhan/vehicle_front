@@ -23,7 +23,7 @@ function Layout() {
 
 	const navItems = [
 		{ path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-		{ path: "/layout/customers", label: "UserInfo", icon: Users },
+		{ path: "/layout/customers", label: "Customer Info", icon: Users },
 		{ path: "/layout/vechicleMaster", label: "Vehicle Master", icon: Car },
 		{ path: "/layout/service-update", label: "Service Update", icon: FileText },
 		{ path: "/layout/payment", label: "Payments", icon: CreditCard },
