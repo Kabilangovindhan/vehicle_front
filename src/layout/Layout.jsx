@@ -49,7 +49,6 @@ function Layout() {
 			{ path: "/layout/bookings", label: "Booking Management", icon: Calendar },
 			{ path: "/layout/job-control", label: "Job Control Center", icon: ShieldCheck },
 			{ path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
-			{ path: "/layout/vehicle-master", label: "Vechile Master", icon: FileText },
 			{ path: "/layout/inventory", label: "Spare Parts Inventory", icon: Package },
 			{ path: "/layout/billing-admin", label: "Billing & Invoice", icon: CreditCard },
 			{ path: "/layout/records", label: "Service Records", icon: History },

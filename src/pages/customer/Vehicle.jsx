@@ -5,7 +5,7 @@ import {
     Fingerprint, Calendar, Activity, Mail
 } from "lucide-react";
 
-function VehicleMaster() {
+function Vehicle() {
 
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -325,4 +325,4 @@ const Select = ({ label, options, defaultValue }) => (
     </div>
 );
 
-export default VehicleMaster;
+export default Vehicle;
