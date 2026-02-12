@@ -102,7 +102,7 @@ function VehicleMaster() {
                 <div className="max-w-7xl mx-auto h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2 font-black text-xl tracking-tight">
                         <div className="bg-indigo-600 p-1.5 rounded-lg text-white"><Car size={20} /></div>
-                        Fleet<span className="text-indigo-600">Admin</span>
+                        vehicle<span className="text-indigo-600">Details</span>
                     </div>
                     <button onClick={() => openDrawer()} className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-100 active:scale-95">
                         <Plus size={18} /> Add New Vehicle

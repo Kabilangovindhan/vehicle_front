@@ -32,21 +32,63 @@ function Auth() {
 	const handleChange = (e) =>
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
+
 		e.preventDefault();
 		setIsLoading(true);
 
-		setTimeout(() => {
-			setIsLoading(false);
-			if (isForgotPassword) {
-				alert("Password reset link sent to email!");
-				setIsForgotPassword(false);
-				return;
+		try {
+
+			if (isRegistering) {
+
+				const res = await fetch("http://localhost:5000/api/customer/register", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(formData)
+				});
+
+				const data = await res.json();
+
+				if (res.ok) {
+					alert("Registered Successfully");
+					setIsRegistering(false);
+				} else {
+					alert(data.message);
+				}
+
+			} else {
+
+				const res = await fetch("http://localhost:5000/api/customer/login", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						phone: formData.phone,
+						password: formData.password
+					})
+				});
+
+				const data = await res.json();
+
+				if (res.ok) {
+					sessionStorage.setItem("token", data.token);
+					sessionStorage.setItem("name", data.user.name);
+					sessionStorage.setItem("phone", data.user.phone);
+					sessionStorage.setItem("role", data.user.role);
+
+					navigate("/layout/dashboard");
+				} else {
+					alert(data.message);
+				}
+
 			}
-			if (!isRegistering) navigate("/layout/dashboard");
-			else alert("Account Created!");
-		}, 1200);
+
+		} catch (error) {
+			alert("Server Error");
+		}
+
+		setIsLoading(false);
 	};
+
 
 	return (
 		<div className="relative min-h-screen flex items-center justify-center px-4 font-sans selection:bg-indigo-500/30">
@@ -109,9 +151,9 @@ function Auth() {
 							<div className="space-y-4">
 								<div className="group border-b border-white/10 focus-within:border-indigo-500 py-3 transition-all duration-300">
 									<input
-										type="email"
-										name="email"
-										placeholder="Email Address"
+										type="text"
+										name="phone"
+										placeholder="Phone Number"
 										className="w-full bg-transparent outline-none text-white placeholder-white/30 text-sm"
 										onChange={handleChange}
 										required
@@ -196,7 +238,7 @@ function Auth() {
 						)}
 
 						{/* MAIN ACTION BUTTON */}
-						<button className="group relative w-full overflow-hidden mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-900/40 active:scale-[0.98]">
+						<button type="submit" className="group relative w-full overflow-hidden mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-900/40 active:scale-[0.98]">
 							<div className="relative z-10 flex justify-center items-center gap-2">
 								{isLoading ? <Loader2 className="animate-spin" /> : <span>{isForgotPassword ? "Send Link" : "Continue"}</span>}
 								{!isLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}

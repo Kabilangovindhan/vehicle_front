@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Users, Car, LayoutDashboard, FileText, CreditCard, LogOut, Settings, Bell, Search } from "lucide-react";
 
 function Layout() {
 
 	const [open, setOpen] = useState(false);
 	const location = useLocation();
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		sessionStorage.clear();   // remove name, phone, role, token
+		localStorage.clear();     // optional if you stored anything there
+		navigate("/");            // or "/login" (your login route)
+	};
+
 
 	const navClass = ({ isActive }) =>
 		`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${isActive
@@ -92,7 +100,11 @@ function Layout() {
 							<p className="text-[11px] text-indigo-300/70 truncate leading-none">Workshop Manager</p>
 						</div>
 					</div>
-					<button className="flex w-full items-center gap-3 px-4 py-4 text-sm text-indigo-300 hover:text-red-300 transition-colors mt-2">
+					<button
+						onClick={handleLogout}
+						className="flex w-full items-center gap-3 px-4 py-4 text-sm text-indigo-300 hover:text-red-300 transition-colors mt-2"
+					>
+
 						<LogOut size={18} />
 						<span className="font-medium">Sign Out</span>
 					</button>
@@ -141,7 +153,7 @@ function Layout() {
 
 				{/* Content Area */}
 				<main className="flex-1 p-6 md:p-10 overflow-y-auto">
-					<div className="max-w-7xl mx-auto"> 	
+					<div className="max-w-7xl mx-auto">
 						<div className="md:hidden h-14" />
 						<Outlet />
 					</div>
