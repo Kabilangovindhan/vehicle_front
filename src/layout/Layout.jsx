@@ -8,10 +8,9 @@ import {
 } from "lucide-react";
 
 function Layout() {
+
 	const [open, setOpen] = useState(false);
 	const navigate = useNavigate();
-
-	// Get role from session storage (default to 'CUSTOMER' if not found)
 	const userRole = sessionStorage.getItem("role")?.toUpperCase() || "CUSTOMER";
 
 	const handleLogout = () => {
@@ -20,7 +19,6 @@ function Layout() {
 		navigate("/");
 	};
 
-	// Navigation configurations for each role
 	const menuConfigs = {
 		CUSTOMER: [
 			{ path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -47,10 +45,11 @@ function Layout() {
 		],
 		ADMIN: [
 			{ path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
-			{ path: "/layout/users", label: "User Management", icon: Users },
+			{ path: "/layout/customers", label: "Customer Management", icon: Users },
 			{ path: "/layout/bookings", label: "Booking Management", icon: Calendar },
 			{ path: "/layout/job-control", label: "Job Control Center", icon: ShieldCheck },
 			{ path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
+			{ path: "/layout/vehicle-master", label: "Vechile Master", icon: FileText },
 			{ path: "/layout/inventory", label: "Spare Parts Inventory", icon: Package },
 			{ path: "/layout/billing-admin", label: "Billing & Invoice", icon: CreditCard },
 			{ path: "/layout/records", label: "Service Records", icon: History },
@@ -109,8 +108,10 @@ function Layout() {
 					</div>
 				</div>
 
-				<nav className="flex-1 px-6 space-y-1 overflow-y-auto">
-					<p className="px-2 text-[11px] font-bold text-indigo-400/60 uppercase mb-4 tracking-[0.2em]">Management</p>
+				<nav className="flex-1 px-6 space-y-1 overflow-y-auto sidebar-scroll">
+					<p className="px-2 text-[11px] font-bold text-indigo-400/60 uppercase mb-4 tracking-[0.2em]">
+						Management
+					</p>
 					{navItems.map((item) => (
 						<NavLink
 							key={item.path}
