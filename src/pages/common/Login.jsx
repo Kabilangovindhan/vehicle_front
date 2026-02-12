@@ -75,6 +75,7 @@ function Auth() {
 					sessionStorage.setItem("role", data.user.role);
 
 					navigate("/layout/customers");
+
 				} else {
 					alert(data.message);
 				}
