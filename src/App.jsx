@@ -5,6 +5,8 @@ import Layout from "./layout/Layout";
 import Customers from "./pages/admin/Customer";
 import Vehicle from "./pages/customer/Vehicle";
 import Booking from "./pages/customer/booking";
+import ServiceTracking from "./pages/customer/servicetracking";
+
 
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
 				<Route path="my-vehicles" element={<Vehicle />} />
 				<Route path="/layout/vehicle" element={<Vehicle />} />
 				<Route path="/layout/service-booking" element={<Booking />} />
+				<Route path="/layout/service-tracking" element={<ServiceTracking />} />
 
 
 			</Route>
