@@ -15,9 +15,20 @@ function Vehicle() {
 
     useEffect(() => { fetchUsers(); }, []);
 
+   
+
+
     const fetchUsers = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/vehicle");
+            const phone = sessionStorage.getItem("phone");
+            console.log(phone)
+
+            const res = await fetch("http://localhost:5000/api/vehicle/user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone })
+            });
+
             const data = await res.json();
             setUsers(data);
         } catch (err) { console.error("Fetch error:", err); }
@@ -70,7 +81,7 @@ function Vehicle() {
                 setIsDrawerOpen(false);
             }
 
-        } catch (err) {alert("Save failed")}
+        } catch (err) { alert("Save failed") }
     };
 
     const handleDelete = async (id) => {
@@ -78,7 +89,7 @@ function Vehicle() {
         if (!window.confirm("Permanently delete this vehicle record?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/vehicle/${id}`, { method: "DELETE"});
+            const res = await fetch(`http://localhost:5000/api/vehicle/${id}`, { method: "DELETE" });
             if (res.ok) setUsers(users.filter(u => u._id !== id));
         } catch (err) {
             alert("Delete failed");

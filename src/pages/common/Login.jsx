@@ -74,7 +74,7 @@ function Auth() {
 					sessionStorage.setItem("phone", data.user.phone);
 					sessionStorage.setItem("role", data.user.role);
 
-					navigate("/layout/customers");
+					navigate("/layout/vehicle");
 
 				} else {
 					alert(data.message);
