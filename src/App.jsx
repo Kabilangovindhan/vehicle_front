@@ -6,6 +6,10 @@ import Customers from "./pages/admin/Customer";
 import Vehicle from "./pages/customer/Vehicle";
 import Booking from "./pages/customer/Booking";
 import ServiceTracking from "./pages/customer/ServiceTracking";
+import BookingManagement from "./pages/admin/BookingManagement";
+import AssignedJobs from "./pages/staff/AssignedJobs";	
+
+
 
 function App() {
 	return (
@@ -17,6 +21,9 @@ function App() {
 				<Route path="my-vehicles" element={<Vehicle />} />
 				<Route path="vehicle" element={<Vehicle />} />
 				<Route path="service-booking" element={<Booking />} />
+				<Route path="bookings" element={<BookingManagement />} />
+				<Route path="assigned-jobs" element={<AssignedJobs />} />	
+
 			</Route>
 		</Routes>
 	)
