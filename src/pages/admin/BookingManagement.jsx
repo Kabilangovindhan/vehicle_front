@@ -10,7 +10,8 @@ import {
     Package,
     Truck,
     Phone,
-    Hash
+    Hash,
+    UserCheck
 } from "lucide-react";
 
 function BookingManagement() {
@@ -20,27 +21,24 @@ function BookingManagement() {
     const [staffList, setStaffList] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState({});
 
-
     useEffect(() => {
         fetchBookings();
         fetchStaff();
-
     }, []);
 
-
     const fetchStaff = async () => {
-
-        const res = await fetch("http://localhost:5000/api/admin/staff", {
-            headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
-            }
-        });
-
-        const data = await res.json();
-        setStaffList(data);
-
+        try {
+            const res = await fetch("http://localhost:5000/api/admin/staff", {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            });
+            const data = await res.json();
+            setStaffList(data);
+        } catch (err) {
+            console.error("Failed to fetch staff", err);
+        }
     };
-
 
     const fetchBookings = async () => {
         try {
@@ -75,8 +73,6 @@ function BookingManagement() {
     };
 
     const approveBooking = async (bookingId) => {
-        console.log("Approving booking with ID:", bookingId);
-
         const mechanicId = selectedStaff[bookingId];
 
         if (!mechanicId) {
@@ -84,27 +80,30 @@ function BookingManagement() {
             return;
         }
 
-        const res = await fetch(
-            `http://localhost:5000/api/admin/booking/${bookingId}/approve`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
-                },
-                body: JSON.stringify({
-                    mechanicId
-                })
+        try {
+            const res = await fetch(
+                `http://localhost:5000/api/admin/booking/${bookingId}/approve`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({ mechanicId })
+                }
+            );
+
+            if (res.ok) {
+                alert("Job assigned successfully");
+                fetchBookings();
+            } else {
+                alert("Failed to assign job");
             }
-        );
-
-        const data = await res.json();
-
-        alert("Job assigned successfully");
-
-        fetchBookings();
-
+        } catch (err) {
+            console.error(err);
+        }
     };
+
     const StatusBadge = ({ status }) => {
         const styles = {
             Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
@@ -114,8 +113,6 @@ function BookingManagement() {
             Delivered: "bg-purple-100 text-purple-700 border-purple-200",
             Rejected: "bg-red-100 text-red-700 border-red-200"
         };
-
-
 
         return (
             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${styles[status] || "bg-gray-100"}`}>
@@ -205,64 +202,57 @@ function BookingManagement() {
 
                                 {/* Actions - Responsive Grid */}
                                 <div className="p-4 md:p-6 bg-white border-t border-slate-100">
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-2 md:gap-3">
-                                        <select
-                                            value={selectedStaff[b._id] || ""}
-                                            onChange={(e) =>
-                                                setSelectedStaff({
-                                                    ...selectedStaff,
-                                                    [b._id]: e.target.value
-                                                })
-                                            }
-                                            className="border px-2 py-2 rounded-lg text-sm"
-                                        >
-                                            <option value="">Select Staff</option>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap items-center gap-2 md:gap-3">
+                                        
+                                        {/* CONDITIONAL ASSIGNMENT LOGIC */}
+                                        {b.status === "Pending" ? (
+                                            <>
+                                                <select
+                                                    value={selectedStaff[b._id] || ""}
+                                                    onChange={(e) =>
+                                                        setSelectedStaff({
+                                                            ...selectedStaff,
+                                                            [b._id]: e.target.value
+                                                        })
+                                                    }
+                                                    className="border border-slate-200 px-3 py-2 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                >
+                                                    <option value="">Select Staff</option>
+                                                    {staffList.map(staff => (
+                                                        <option key={staff._id} value={staff._id}>
+                                                            {staff.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
 
-                                            {staffList.map(staff => (
-                                                <option key={staff._id} value={staff._id}>
-                                                    {staff.name}
-                                                </option>
-                                            ))}
+                                                <button
+                                                    onClick={() => approveBooking(b._id)}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm"
+                                                >
+                                                    Assign Job
+                                                </button>
+                                            </>
+                                        ) : (
+                                            /* Matches design in Image 3 */
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 rounded-lg text-sm font-bold border border-slate-200">
+                                                <UserCheck size={16} /> Job Assigned
+                                            </div>
+                                        )}
 
-                                        </select>
-
-
+                                        {/* Deliver Button - Disabled if status is NOT Pending */}
                                         <button
-                                            onClick={() => approveBooking(b._id)}
-                                            className="bg-blue-600 text-white px-3 py-2 rounded-lg"
-                                        >
-                                            Assign Job
-                                        </button>
-
-
-                                        <button
-                                            disabled={updatingId === b._id}
-                                            onClick={() => updateStatus(b._id, "In Progress")}
-                                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white rounded-lg transition-colors font-semibold text-sm disabled:opacity-50"
-                                        >
-                                            <Loader2 size={16} className={updatingId === b._id ? "animate-spin" : ""} /> Start
-                                        </button>
-
-                                        <button
-                                            disabled={updatingId === b._id}
-                                            onClick={() => updateStatus(b._id, "Completed")}
-                                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-green-50 text-green-700 hover:bg-green-600 hover:text-white rounded-lg transition-colors font-semibold text-sm disabled:opacity-50"
-                                        >
-                                            <Package size={16} /> Finish
-                                        </button>
-
-                                        <button
-                                            disabled={updatingId === b._id}
+                                            disabled={updatingId === b._id || b.status !== "Pending"}
                                             onClick={() => updateStatus(b._id, "Delivered")}
-                                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white rounded-lg transition-colors font-semibold text-sm disabled:opacity-50"
+                                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white rounded-lg transition-colors font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             <Truck size={16} /> Deliver
                                         </button>
 
+                                        {/* Reject Button - Disabled if status is NOT Pending */}
                                         <button
-                                            disabled={updatingId === b._id}
+                                            disabled={updatingId === b._id || b.status !== "Pending"}
                                             onClick={() => updateStatus(b._id, "Rejected")}
-                                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white rounded-lg transition-colors font-semibold text-sm disabled:opacity-50 col-span-2 sm:col-span-1"
+                                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white rounded-lg transition-colors font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed col-span-2 sm:col-span-1"
                                         >
                                             <XCircle size={16} /> Reject
                                         </button>
