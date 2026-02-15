@@ -9,7 +9,8 @@ import ServiceTracking from "./pages/customer/ServiceTracking";
 import BookingManagement from "./pages/admin/BookingManagement";
 import AssignedJobs from "./pages/staff/AssignedJobs";
 import InspectionPage from "./pages/staff/inspection";
-import EstimateApproval from "./pages/staff/estimate";
+import CreateEstimate from "./pages/staff/CreateEstimate";
+
 
 
 
@@ -29,8 +30,8 @@ function App() {
 				<Route path="inspection/:jobId" element={<InspectionPage />} />
 
 				<Route path="inspection/:jobId" element={<InspectionPage />} />
-				<Route path="estimate-approval" element={<EstimateApproval />} />
-				<Route path="estimate-approval/:jobId" element={<EstimateApproval />} />
+				<Route path="create-estimate/:jobId" element={<CreateEstimate />} />
+
 
 
 			</Route>
