@@ -16,7 +16,7 @@ function UserMaster() {
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/user");
+            const res = await fetch("http://localhost:5000/api/customerManage/fetchUsers");
             const data = await res.json();
             setUsers(data);
         } catch (err) {
@@ -40,13 +40,13 @@ function UserMaster() {
         try {
             let res;
             if (currentUser) {
-                res = await fetch(`http://localhost:5000/api/user/${currentUser._id}`, {
+                res = await fetch(`http://localhost:5000/api/customerManage/updateUser/${currentUser._id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
             } else {
-                res = await fetch(`http://localhost:5000/api/user`, {
+                res = await fetch(`http://localhost:5000/api/customerManage/createUser`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
@@ -65,7 +65,7 @@ function UserMaster() {
     const handleDelete = async (id) => {
         if (!window.confirm("Delete user permanently?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/user/${id}`, { method: "DELETE" });
+            const res = await fetch(`http://localhost:5000/api/customerManage/deleteUser/${id}`, { method: "DELETE" });
             if (res.ok) setUsers(users.filter(u => u._id !== id));
         } catch {
             alert("Delete failed");
