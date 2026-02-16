@@ -12,7 +12,7 @@ function StaffBookings() {
 
     const fetchBookings = async () => {
 
-        const res = await fetch("http://localhost:5000/api/staff/bookings/pending", {
+        const res = await fetch("http://localhost:5000/api/staffbookings/fetchbook", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -24,7 +24,7 @@ function StaffBookings() {
 
     const approveBooking = async (id) => {
 
-        await fetch(`http://localhost:5000/api/staff/booking/${id}/approve`, {
+        await fetch(`http://localhost:5000/api/staffbookings/approve/${id}`, {
             method: "PUT",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -36,7 +36,7 @@ function StaffBookings() {
 
     const rejectBooking = async (id) => {
 
-        await fetch(`http://localhost:5000/api/staff/booking/${id}/reject`, {
+        await fetch(`http://localhost:5000/api/staffbookings/rejectbook/${id}`, {
             method: "PUT",
             headers: {
                 Authorization: `Bearer ${token}`

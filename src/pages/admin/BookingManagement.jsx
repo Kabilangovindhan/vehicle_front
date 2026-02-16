@@ -28,7 +28,7 @@ function BookingManagement() {
 
     const fetchStaff = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/admin/staff", {
+            const res = await fetch("http://localhost:5000/api/adminBooking/staff", {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("token")}`
                 }
@@ -42,7 +42,7 @@ function BookingManagement() {
 
     const fetchBookings = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/booking");
+            const res = await fetch("http://localhost:5000/api/adminBooking/fetchbooking");
             const data = await res.json();
             setBookings(data);
         } catch (err) {
@@ -55,7 +55,7 @@ function BookingManagement() {
     const updateStatus = async (id, status) => {
         setUpdatingId(id);
         try {
-            const res = await fetch(`http://localhost:5000/api/booking/${id}`, {
+            const res = await fetch(`http://localhost:5000/api/adminBooking/update/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status })
@@ -82,7 +82,7 @@ function BookingManagement() {
 
         try {
             const res = await fetch(
-                `http://localhost:5000/api/admin/booking/${bookingId}/approve`,
+                `http://localhost:5000/api/adminBooking/approvebooking/${bookingId}/approve`,
                 {
                     method: "PUT",
                     headers: {

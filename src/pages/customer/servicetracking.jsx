@@ -14,7 +14,7 @@ function ServiceTracking() {
 
     const fetchBookings = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/booking/customer/${phone}`);
+            const res = await fetch(`http://localhost:5000/api/customerServiceTrack/fetchbookings/${phone}`);
             const data = await res.json();
             setBookings(Array.isArray(data) ? data : []);
         } catch (err) {

@@ -15,25 +15,25 @@ function Vehicle() {
 
     useEffect(() => { fetchUsers(); }, []);
 
-   
+
 
 
     const fetchUsers = async () => {
         try {
-            const phone = sessionStorage.getItem("phone");
-            console.log(phone)
-
-            const res = await fetch("http://localhost:5000/api/vehicle/user", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone })
+            const res = await fetch("http://localhost:5000/api/vehicle/getvehicle", {
+                method: "GET"
             });
 
             const data = await res.json();
             setUsers(data);
-        } catch (err) { console.error("Fetch error:", err); }
-        finally { setLoading(false); }
+
+        } catch (err) {
+            console.error("Fetch error:", err);
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     const handleSave = async (e) => {
 
@@ -63,13 +63,13 @@ function Vehicle() {
             let res;
 
             if (currentUser) {
-                res = await fetch(`http://localhost:5000/api/vehicle/${currentUser._id}`, {
+                res = await fetch(`http://localhost:5000/api/vehicle/updatevehicle/${currentUser._id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
             } else {
-                res = await fetch(`http://localhost:5000/api/vehicle`, {
+                res = await fetch(`http://localhost:5000/api/vehicle/createvehicle`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
@@ -89,7 +89,10 @@ function Vehicle() {
         if (!window.confirm("Permanently delete this vehicle record?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/vehicle/${id}`, { method: "DELETE" });
+            const res = await fetch(`http://localhost:5000/api/vehicle/deletevehicle/${id}`, {
+                method: "DELETE"
+            });
+
             if (res.ok) setUsers(users.filter(u => u._id !== id));
         } catch (err) {
             alert("Delete failed");

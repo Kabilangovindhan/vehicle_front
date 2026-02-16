@@ -22,7 +22,7 @@ function AssignedJobs() {
 
     const fetchJobs = () => {
         setLoading(true);
-        fetch("http://localhost:5000/api/staff/jobs", {
+        fetch("http://localhost:5000/api/staffJobAssign/fetch", {
             headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
         })
             .then(res => res.json())
