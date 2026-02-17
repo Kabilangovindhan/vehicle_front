@@ -45,8 +45,8 @@ function Layout() {
 		],
 		ADMIN: [
 			{ path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
-			{ path: "/layout/customers", label: "Customer Management", icon: Users },
-			{ path: "/layout/bookings", label: "Booking Management", icon: Calendar },
+			{ path: "/layout/customer-management	", label: "Customer Management", icon: Users },
+			{ path: "/layout/job-assignment", label: "Job Assignment", icon: Calendar },
 			{ path: "/layout/job-control", label: "Job Control Center", icon: ShieldCheck },
 			{ path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
 			{ path: "/layout/inventory", label: "Spare Parts Inventory", icon: Package },

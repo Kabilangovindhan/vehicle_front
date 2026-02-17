@@ -40,7 +40,7 @@ function Auth() {
 
 			if (isRegistering) {
 
-				const res = await fetch("http://localhost:5000/api/customer/register", {
+				const res = await fetch("http://localhost:5000/api/authentication/register", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(formData)
@@ -57,7 +57,7 @@ function Auth() {
 
 			} else {
 
-				const res = await fetch("http://localhost:5000/api/customer/login", {
+				const res = await fetch("http://localhost:5000/api/authentication/login", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -73,19 +73,17 @@ function Auth() {
 					sessionStorage.setItem("name", data.user.name);
 					sessionStorage.setItem("phone", data.user.phone);
 					sessionStorage.setItem("role", data.user.role);
-
-					navigate("/layout/vehicle");
-
-				} else {
-					alert(data.message);
-				}
-
+					const role = data.user.role?.toUpperCase();
+					if (role === "ADMIN") {navigate("/layout/job-assignment")}
+					else if (role === "STAFF") {navigate("/layout/assigned-jobs")}
+					else {navigate("/layout/my-vehicles")}
+				} else {alert(data.message)}
 			}
 
 		} catch (error) {
+			console.log("Error during login : ", error);
 			alert("Server Error");
 		}
-
 		setIsLoading(false);
 	};
 

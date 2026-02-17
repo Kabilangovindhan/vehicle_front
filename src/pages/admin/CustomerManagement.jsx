@@ -5,7 +5,8 @@ import {
     Fingerprint, Lock
 } from "lucide-react";
 
-function UserMaster() {
+function CustomerManagement() {
+
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +17,7 @@ function UserMaster() {
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/customerManage/fetchUsers");
+            const res = await fetch("http://localhost:5000/api/customerManagement/fetchUsers");
             const data = await res.json();
             setUsers(data);
         } catch (err) {
@@ -40,13 +41,13 @@ function UserMaster() {
         try {
             let res;
             if (currentUser) {
-                res = await fetch(`http://localhost:5000/api/customerManage/updateUser/${currentUser._id}`, {
+                res = await fetch(`http://localhost:5000/api/customerManagement/updateUser/${currentUser._id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
             } else {
-                res = await fetch(`http://localhost:5000/api/customerManage/createUser`, {
+                res = await fetch(`http://localhost:5000/api/customerManagement/createUser`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
@@ -65,7 +66,7 @@ function UserMaster() {
     const handleDelete = async (id) => {
         if (!window.confirm("Delete user permanently?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/customerManage/deleteUser/${id}`, { method: "DELETE" });
+            const res = await fetch(`http://localhost:5000/api/customerManagement/deleteUser/${id}`, { method: "DELETE" });
             if (res.ok) setUsers(users.filter(u => u._id !== id));
         } catch {
             alert("Delete failed");
@@ -89,7 +90,7 @@ function UserMaster() {
                 <div className="max-w-7xl mx-auto h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2 font-black text-xl tracking-tight">
                         <div className="bg-indigo-600 p-1.5 rounded-lg text-white"><User size={20} /></div>
-                        user<span className="text-indigo-600">Admin</span>
+                        Customer<span className="text-indigo-600">Management</span>
                     </div>
                     <button onClick={() => openDrawer()} className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-100 active:scale-95">
                         <Plus size={18} /> Add New User
@@ -122,20 +123,20 @@ function UserMaster() {
                 ) : (
                     <div className="space-y-6">
                         {/* --- DESKTOP TABLE --- */}
-                        <div className="hidden lg:block bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="hidden lg:block bg-white rounded-[1rem] border border-slate-200 shadow-sm overflow-hidden">
                             <table className="w-full text-left">
                                 <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                        <th className="px-8 py-4">User Identity</th>
+                                        <th className="px-16 py-4">User Identity</th>
                                         <th className="px-8 py-4">Contact Details</th>
                                         <th className="px-8 py-4">Security Role</th>
-                                        <th className="px-8 py-4 text-right">Actions</th>
+                                        <th className="px-8 py-4 text-center    ">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {filteredUsers.map(u => (
                                         <tr key={u._id} className="hover:bg-slate-50/80 transition-colors group">
-                                            <td className="px-8 py-5">
+                                            <td className="px-16 py-5">
                                                 <div className="font-bold text-slate-900">{u.name}</div>
                                                 <div className="text-[10px] text-slate-400 font-mono mt-0.5 uppercase tracking-tighter">UID: {u._id.slice(-8)}</div>
                                             </td>
@@ -146,8 +147,8 @@ function UserMaster() {
                                             <td className="px-8 py-5">
                                                 <RoleBadge role={u.role} />
                                             </td>
-                                            <td className="px-8 py-5 text-right">
-                                                <div className="flex justify-end gap-2">
+                                            <td className="px-8 py-5">
+                                                <div className="flex justify-center gap-2">
                                                     <button onClick={() => openDrawer(u)} className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-indigo-600 shadow-sm border border-transparent hover:border-slate-200 transition-all"><Edit3 size={16} /></button>
                                                     <button onClick={() => handleDelete(u._id)} className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-red-600 shadow-sm border border-transparent hover:border-slate-200 transition-all"><Trash2 size={16} /></button>
                                                 </div>
@@ -239,8 +240,6 @@ function UserMaster() {
     );
 }
 
-// --- SHARED UI COMPONENTS ---
-
 const RoleBadge = ({ role }) => {
     const themes = {
         admin: "bg-blue-50 text-blue-700 ring-blue-100",
@@ -277,4 +276,4 @@ const Select = ({ label, options, name, defaultValue }) => (
     </div>
 );
 
-export default UserMaster;
+export default CustomerManagement;

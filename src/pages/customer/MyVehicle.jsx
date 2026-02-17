@@ -5,7 +5,7 @@ import {
     Fingerprint, Calendar, Activity, Mail
 } from "lucide-react";
 
-function Vehicle() {
+function MyVehicle() {
 
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,25 +15,27 @@ function Vehicle() {
 
     useEffect(() => { fetchUsers(); }, []);
 
-
-
+    const phone = sessionStorage.getItem("phone");
 
     const fetchUsers = async () => {
-        try {
-            const res = await fetch("http://localhost:5000/api/vehicle/getvehicle", {
-                method: "GET"
-            });
 
+        if (!phone) return;
+
+        try {
+            setLoading(true);
+
+            const res = await fetch(`http://localhost:5000/api/myVehicle/getvehicle/${phone}`);
             const data = await res.json();
-            setUsers(data);
+
+            setUsers(Array.isArray(data) ? data : []);
 
         } catch (err) {
             console.error("Fetch error:", err);
+            setUsers([]);
         } finally {
             setLoading(false);
         }
     };
-
 
     const handleSave = async (e) => {
 
@@ -43,7 +45,7 @@ function Vehicle() {
 
         const payload = {
             ownerName: formData.get("ownerName"),
-            ownerPhone: formData.get("ownerPhone"),
+            ownerPhone: phone,
             ownerEmail: formData.get("ownerEmail"),
             vehicleNumber: formData.get("vehicleNumber"),
             brand: formData.get("brand"),
@@ -63,44 +65,69 @@ function Vehicle() {
             let res;
 
             if (currentUser) {
-                res = await fetch(`http://localhost:5000/api/vehicle/updatevehicle/${currentUser._id}`, {
+
+                // UPDATE (secured)
+                res = await fetch(`http://localhost:5000/api/myVehicle/updatevehicle/${currentUser._id}/${phone}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
+
             } else {
-                res = await fetch(`http://localhost:5000/api/vehicle/createvehicle`, {
+
+                // CREATE
+                res = await fetch(`http://localhost:5000/api/myVehicle/createvehicle`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
             }
 
-            if (res.ok) {
-                fetchUsers();
-                setIsDrawerOpen(false);
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message || "Operation failed");
+                return;
             }
 
-        } catch (err) { alert("Save failed") }
+            fetchUsers();
+            setIsDrawerOpen(false);
+            setCurrentUser(null);
+
+        } catch (err) {
+            console.error(err);
+            alert("Save failed");
+        }
     };
+
 
     const handleDelete = async (id) => {
 
         if (!window.confirm("Permanently delete this vehicle record?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/vehicle/deletevehicle/${id}`, {
+
+            const res = await fetch(`http://localhost:5000/api/myVehicle/deletevehicle/${id}/${phone}`, {
                 method: "DELETE"
             });
 
-            if (res.ok) setUsers(users.filter(u => u._id !== id));
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message || "Delete failed");
+                return;
+            }
+
+            setUsers(prev => prev.filter(u => u._id !== id));
+
         } catch (err) {
+            console.error(err);
             alert("Delete failed");
         }
     };
 
     const openDrawer = (user = null) => {
-        setCurrentUser(user);
+        setCurrentUser(user || null);
         setIsDrawerOpen(true);
     };
 
@@ -110,7 +137,7 @@ function Vehicle() {
     );
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-12">
+        <div className="min-h-screen text-slate-900 pb-12">
             {/* --- NAV BAR --- */}
             <nav className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm px-4">
                 <div className="max-w-7xl mx-auto h-16 flex items-center justify-between">
@@ -124,7 +151,7 @@ function Vehicle() {
                 </div>
             </nav>
 
-            <div className="max-w-7xl mx-auto px-4 mt-8">
+            <div className="mx-auto mt-8">
                 {/* --- SEARCH & COUNTER --- */}
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
                     <div className="relative w-full md:w-96 group">
@@ -149,21 +176,21 @@ function Vehicle() {
                 ) : (
                     <div className="space-y-6">
                         {/* --- DESKTOP TABLE --- */}
-                        <div className="hidden lg:block bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="hidden lg:block bg-white rounded-[1rem] border border-slate-200 shadow-sm overflow-hidden">
                             <table className="w-full text-left">
                                 <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                        <th className="px-8 py-4">Owner & Contact</th>
+                                        <th className="px-16 py-4">Owner & Contact</th>
                                         <th className="px-8 py-4">Vehicle Identity</th>
                                         <th className="px-8 py-4">Specs & Identification</th>
                                         <th className="px-8 py-4">Maintenance</th>
-                                        <th className="px-8 py-4 text-right">Actions</th>
+                                        <th className="px-8 py-4 text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {filteredUsers.map(u => (
                                         <tr key={u._id} className="hover:bg-slate-50/80 transition-colors group">
-                                            <td className="px-8 py-5">
+                                            <td className="px-16 py-5">
                                                 <div className="font-bold text-slate-900">{u.ownerName}</div>
                                                 <div className="text-xs text-slate-500 flex items-center gap-1 mt-1"><Phone size={12} /> {u.ownerPhone}</div>
                                                 <div className="text-xs text-slate-400 flex items-center gap-1"><Mail size={12} /> {u.ownerEmail || 'No Email'}</div>
@@ -184,8 +211,8 @@ function Vehicle() {
                                                 <div className="text-[11px] font-bold text-slate-600">Last Service:</div>
                                                 <div className="text-xs text-slate-400 italic">{u.lastServiceDate ? new Date(u.lastServiceDate).toLocaleDateString() : 'Pending Data'}</div>
                                             </td>
-                                            <td className="px-8 py-5 text-right">
-                                                <div className="flex justify-end gap-2">
+                                            <td className="px-8 py-5 text-center">
+                                                <div className="flex justify-center gap-2">
                                                     <button onClick={() => openDrawer(u)} className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-indigo-600 shadow-sm border border-transparent hover:border-slate-200 transition-all"><Edit3 size={16} /></button>
                                                     <button onClick={() => handleDelete(u._id)} className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-red-600 shadow-sm border border-transparent hover:border-slate-200 transition-all"><Trash2 size={16} /></button>
                                                 </div>
@@ -245,7 +272,13 @@ function Vehicle() {
                                 <SectionTitle icon={<User size={16} />} title="Owner Information" />
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Input name="ownerName" label="Full Name" defaultValue={currentUser?.ownerName} required />
-                                    <Input name="ownerPhone" label="Phone Number" defaultValue={currentUser?.ownerPhone} required />
+                                    <Input
+                                        name="ownerPhone"
+                                        label="Phone Number"
+                                        value={phone || ""}
+                                        readOnly
+                                        className="bg-slate-100 cursor-not-allowed"
+                                    />
                                     <div className="md:col-span-2">
                                         <Input name="ownerEmail" label="Email Address" type="email" defaultValue={currentUser?.ownerEmail} />
                                     </div>
@@ -339,4 +372,4 @@ const Select = ({ label, options, defaultValue }) => (
     </div>
 );
 
-export default Vehicle;
+export default MyVehicle;
