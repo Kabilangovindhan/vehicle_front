@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 function BookingManagement() {
+
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updatingId, setUpdatingId] = useState(null);
@@ -44,6 +45,7 @@ function BookingManagement() {
         try {
             const res = await fetch("http://localhost:5000/api/adminBooking/fetchbooking");
             const data = await res.json();
+            console.log(data)
             setBookings(data);
         } catch (err) {
             console.log(err);
@@ -203,7 +205,7 @@ function BookingManagement() {
                                 {/* Actions - Responsive Grid */}
                                 <div className="p-4 md:p-6 bg-white border-t border-slate-100">
                                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap items-center gap-2 md:gap-3">
-                                        
+
                                         {/* CONDITIONAL ASSIGNMENT LOGIC */}
                                         {b.status === "Pending" ? (
                                             <>
