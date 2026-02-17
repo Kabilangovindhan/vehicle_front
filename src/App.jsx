@@ -26,10 +26,13 @@ function App() {
 				<Route path="service-booking" element={<Booking />} />
 				<Route path="bookings" element={<BookingManagement />} />
 				<Route path="assigned-jobs" element={<AssignedJobs />} />
+
+
+				
 				<Route path="inspection" element={<InspectionPage />} />
 				<Route path="inspection/:jobId" element={<InspectionPage />} />
 
-				<Route path="inspection/:jobId" element={<InspectionPage />} />
+
 				<Route path="create-estimate/:jobId" element={<CreateEstimate />} />
 
 
