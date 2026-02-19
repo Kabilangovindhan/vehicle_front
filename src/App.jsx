@@ -13,6 +13,8 @@ import JobAssignment from "./pages/admin/JobAssignment";
 import MyVehicle from "./pages/customer/MyVehicle";
 import ServiceTracking from "./pages/customer/ServiceTracking";
 import ServiceBooking from "./pages/customer/ServiceBooking";
+import EstimateApproval from "./pages/customer/EstimateApproval";
+
 
 // Staff Routes
 import AssignedJobs from "./pages/staff/AssignedJobs";
@@ -35,6 +37,9 @@ function App() {
 				<Route path="my-vehicles" element={<MyVehicle />} />
 				<Route path="service-booking" element={<ServiceBooking />} />
 				<Route path="service-tracking" element={<ServiceTracking />} />
+				<Route path="estimates"element={<EstimateApproval />}
+				/>
+
 
 				{/* Staff Routes */}
 				<Route path="assigned-jobs" element={<AssignedJobs />} />

@@ -122,7 +122,7 @@ function JobAssignment() {
 
         } catch (err) {
 
-            console.error(err);
+            console.log('Error in approving booking : ', err);
 
         }
 
@@ -387,7 +387,7 @@ function JobAssignment() {
                                                         </select>
 
                                                         <button
-                                                            onClick={() => updateMechanic(b._id)}
+                                                            onClick={() => approveBooking(b._id)}
                                                             className="w-full bg-indigo-600 text-white py-2 rounded-xl text-xs font-black"
                                                         >
                                                             Save
