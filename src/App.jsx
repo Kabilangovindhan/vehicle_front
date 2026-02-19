@@ -17,6 +17,7 @@ import ServiceBooking from "./pages/customer/ServiceBooking";
 // Staff Routes
 import AssignedJobs from "./pages/staff/AssignedJobs";
 import InspectionReport from "./pages/staff/InspectionReport";
+import Estimate from "./pages/staff/Estimation";
 
 function App() {
 	return (
@@ -37,7 +38,8 @@ function App() {
 
 				{/* Staff Routes */}
 				<Route path="assigned-jobs" element={<AssignedJobs />} />
-				<Route path="inspection" element={<InspectionReport />} />
+				<Route path="inspection/:jobId" element={<InspectionReport />} />
+				<Route path="estimate/:jobId" element={<Estimate />} />
 
 			</Route>
 		</Routes>
