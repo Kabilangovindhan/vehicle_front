@@ -11,7 +11,7 @@ import JobAssignment from "./pages/admin/JobAssignment";
 
 // Customer Routes
 import MyVehicle from "./pages/customer/MyVehicle";
-import ServiceTracking from "./pages/customer/ServiceTracking";
+import ServiceTracking from "./pages/customer/ServiceTrackings";
 import ServiceBooking from "./pages/customer/ServiceBooking";
 import EstimateApproval from "./pages/customer/EstimateApproval";
 
