@@ -20,6 +20,7 @@ import EstimateApproval from "./pages/customer/EstimateApproval";
 import JobManagement from "./pages/staff/JobManagement";
 import InspectionReport from "./pages/staff/InspectionReport";
 import Estimate from "./pages/staff/Estimation";
+import AssignedJob from "./pages/staff/AssignedJob";
 
 function App() {
 	return (
@@ -37,7 +38,7 @@ function App() {
 				<Route path="my-vehicles" element={<MyVehicle />} />
 				<Route path="service-booking" element={<ServiceBooking />} />
 				<Route path="service-tracking" element={<ServiceTracking />} />
-				<Route path="estimates"element={<EstimateApproval />}
+				<Route path="estimates" element={<EstimateApproval />}
 				/>
 
 
@@ -45,6 +46,7 @@ function App() {
 				<Route path="job-managment" element={<JobManagement />} />
 				<Route path="inspection/:jobId" element={<InspectionReport />} />
 				<Route path="estimate/:jobId" element={<Estimate />} />
+				<Route path="assigned-jobs" element={<AssignedJob />} />
 
 			</Route>
 		</Routes>
