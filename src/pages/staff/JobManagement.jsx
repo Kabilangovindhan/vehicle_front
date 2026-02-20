@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Wrench, Car, User, ClipboardList, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-function AssignedJobs() {
+function jobManagement() {
     const navigate = useNavigate();
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ function AssignedJobs() {
 
     const fetchJobs = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/assignedJobs/fetch/${phone}`);
+            const res = await fetch(`http://localhost:5000/api/jobManagement/fetch/${phone}`);
             const data = await res.json();
             setJobs(Array.isArray(data) ? data : []);
         } catch (err) {
@@ -28,7 +28,7 @@ function AssignedJobs() {
     const handleStatusChange = async (jobId, newStatus) => {
         try {
             setUpdatingId(jobId);
-            const res = await fetch(`http://localhost:5000/api/assignedJobs/update/${jobId}`, {
+            const res = await fetch(`http://localhost:5000/api/jobManagement/update/${jobId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus })
@@ -150,4 +150,4 @@ function AssignedJobs() {
     );
 }
 
-export default AssignedJobs;
+export default jobManagement;

@@ -75,7 +75,7 @@ function Auth() {
 					sessionStorage.setItem("role", data.user.role);
 					const role = data.user.role?.toUpperCase();
 					if (role === "ADMIN") {navigate("/layout/job-assignment")}
-					else if (role === "STAFF") {navigate("/layout/assigned-jobs")}
+					else if (role === "STAFF") {navigate("/layout/job-managment")}
 					else {navigate("/layout/my-vehicles")}
 				} else {alert(data.message)}
 			}

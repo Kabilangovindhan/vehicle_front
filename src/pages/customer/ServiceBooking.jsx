@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ClipboardList, Loader2, Car, Calendar, Briefcase, CheckCircle2 } from "lucide-react";
+import { ClipboardList, Loader2, Car, Calendar, Briefcase, CheckCircle2, Wrench } from "lucide-react";
 import axios from "axios";
 
 function ServiceBooking() {
-
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,7 +21,9 @@ function ServiceBooking() {
         }
     }, [phone]);
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +36,7 @@ function ServiceBooking() {
             vehicle: form.get("vehicleId"),
             serviceType: form.get("serviceType"),
             appointmentDate: form.get("appointmentDate"),
-            problemDescription: form.get("problemDescription")
+            problemDescription: form.get("problemDescription"),
         };
 
         try {
@@ -60,9 +61,7 @@ function ServiceBooking() {
                         </div>
                         Auto<span className="text-indigo-600">Care</span>
                     </div>
-                    <div className="px-4 py-2 bg-indigo-50 rounded-xl text-indigo-700 text-[10px] font-black uppercase tracking-widest border border-indigo-100">
-                        Customer Portal
-                    </div>
+                    <div className="px-4 py-2 bg-indigo-50 rounded-xl text-indigo-700 text-[10px] font-black uppercase tracking-widest border border-indigo-100">Customer Portal</div>
                 </div>
             </nav>
 
@@ -94,19 +93,14 @@ function ServiceBooking() {
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-
                                 {/* Vehicle Selection */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                                         <Car size={14} className="text-indigo-500" /> Select Vehicle
                                     </label>
-                                    <select
-                                        name="vehicleId"
-                                        className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer"
-                                        required
-                                    >
+                                    <select name="vehicleId" className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer" required>
                                         <option value="">Choose a vehicle</option>
-                                        {vehicles.map(v => (
+                                        {vehicles.map((v) => (
                                             <option key={v._id} value={v._id}>
                                                 {v.brand} {v.model} ({v.vehicleNumber})
                                             </option>
@@ -116,11 +110,14 @@ function ServiceBooking() {
 
                                 {/* Service Type */}
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Service Type</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                        <Wrench size={14} className="text-indigo-500" />
+                                        Service Type
+                                    </label>
+
                                     <select
                                         name="serviceType"
-                                        className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer"
-                                        required
+                                        className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer" required
                                     >
                                         <option value="">Choose Service</option>
                                         <option value="General Service">General Service</option>
@@ -135,31 +132,18 @@ function ServiceBooking() {
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                                         <Calendar size={14} className="text-indigo-500" /> Preferred Date
                                     </label>
-                                    <input
-                                        type="date"
-                                        name="appointmentDate"
-                                        className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700"
-                                        required
-                                    />
+                                    <input type="date" name="appointmentDate" className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700" required />
                                 </div>
 
                                 {/* Problem Description */}
                                 <div className="space-y-2 md:col-span-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Detailed Description</label>
-                                    <textarea
-                                        name="problemDescription"
-                                        placeholder="Tell us what's wrong with your vehicle..."
-                                        className="w-full mt-2 bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 min-h-[150px] resize-none"
-                                    />
+                                    <textarea name="problemDescription" placeholder="Tell us what's wrong with your vehicle..." className="w-full mt-2 bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 min-h-[150px] resize-none" />
                                 </div>
 
                                 {/* Submit Button */}
                                 <div className="md:col-span-2 pt-4">
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-100 active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-3"
-                                    >
+                                    <button type="submit" disabled={isSubmitting} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-100 active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-3">
                                         {isSubmitting ? (
                                             <>
                                                 <Loader2 className="animate-spin" size={20} />

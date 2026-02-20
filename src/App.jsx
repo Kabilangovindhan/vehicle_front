@@ -17,7 +17,7 @@ import EstimateApproval from "./pages/customer/EstimateApproval";
 
 
 // Staff Routes
-import AssignedJobs from "./pages/staff/AssignedJobs";
+import JobManagement from "./pages/staff/JobManagement";
 import InspectionReport from "./pages/staff/InspectionReport";
 import Estimate from "./pages/staff/Estimation";
 
@@ -42,7 +42,7 @@ function App() {
 
 
 				{/* Staff Routes */}
-				<Route path="assigned-jobs" element={<AssignedJobs />} />
+				<Route path="job-managment" element={<JobManagement />} />
 				<Route path="inspection/:jobId" element={<InspectionReport />} />
 				<Route path="estimate/:jobId" element={<Estimate />} />
 
