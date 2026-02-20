@@ -36,11 +36,7 @@ function Layout() {
 			{ path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
 			{ path: "/layout/assigned-jobs", label: "Assigned Jobs", icon: Briefcase },
 			{ path: "/layout/job-managment", label: "Job Managment", icon: Calendar },
-			{ path: "/layout/spare-parts", label: "Spare Parts Usage", icon: Package },
-			{ path: "/layout/service-update", label: "Service Update", icon: ClipboardCheck },
-			{ path: "/layout/media-upload", label: "Media Upload", icon: Camera },
 			{ path: "/layout/work-history", label: "Work History", icon: History },
-			{ path: "/layout/notifications", label: "Notifications", icon: Bell },
 			{ path: "/layout/profile", label: "Profile", icon: UserCircle },
 		],
 		ADMIN: [
