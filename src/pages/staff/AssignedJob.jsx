@@ -22,7 +22,7 @@ function AssignedJob() {
 
     const fetchJobs = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/jobManagement/fetch/${phone}`);
+            const res = await fetch(`http://localhost:5000/api/assignedJob/fetch/${phone}`);
             const data = await res.json();
             setJobs(Array.isArray(data) ? data : []);
         } catch (err) {
@@ -236,7 +236,7 @@ function EstimateForm({ jobId, prefilledIssues }) {
         if (items.length === 0) return alert("Complete inspection first to generate items.");
         setIsSubmitting(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/jobManagement/estimate/${jobId}`, {
+            const res = await fetch(`http://localhost:5000/api/assignedJob/estimate/${jobId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
