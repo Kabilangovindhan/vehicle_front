@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// Corrected imports - 'Wrench' replaces the non-existent 'Tool'
 import { 
     CheckCircle2, XCircle, Clock, Car, 
     User, Wrench, Clipboard, IndianRupee, 
@@ -7,6 +6,7 @@ import {
 } from "lucide-react";
 
 function EstimateReport() {
+
     const [estimates, setEstimates] = useState([]);
     const [loading, setLoading] = useState(true);
     const phone = sessionStorage.getItem("phone");
@@ -49,8 +49,8 @@ function EstimateReport() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8">
-            <div className="max-w-5xl mx-auto">
+        <div className="min-h-screen">
+            <div className="mx-auto">
                 {/* PAGE HEADER */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
@@ -127,13 +127,13 @@ function EstimateReport() {
                                         <div className="lg:col-span-2 space-y-4">
                                             <Label text="Estimate Breakdown" />
                                             <div className="border border-slate-100 rounded-2xl overflow-hidden overflow-x-auto">
-                                                <table className="w-full text-left border-collapse min-w-[400px]">
+                                                <table className="w-full text-center border-collapse min-w-[400px]">
                                                     <thead>
                                                         <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">
                                                             <th className="px-4 py-3">Issue Title</th>
-                                                            <th className="px-4 py-3 text-right">Labour</th>
-                                                            <th className="px-4 py-3 text-right">Parts</th>
-                                                            <th className="px-4 py-3 text-right">Total</th>
+                                                            <th className="px-4 py-3">Labour</th>
+                                                            <th className="px-4 py-3">Parts</th>
+                                                            <th className="px-4 py-3">Total</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-slate-50">
@@ -142,9 +142,9 @@ function EstimateReport() {
                                                                 <td className="px-4 py-3">
                                                                     <p className="font-bold text-slate-800">{item.issueTitle}</p>
                                                                 </td>
-                                                                <td className="px-4 py-3 text-right font-medium text-slate-600">₹{item.labourCharge}</td>
-                                                                <td className="px-4 py-3 text-right font-medium text-slate-600">₹{item.partsCost}</td>
-                                                                <td className="px-4 py-3 text-right font-bold text-indigo-600">₹{item.total}</td>
+                                                                <td className="px-4 py-3 font-medium text-slate-600">₹{item.labourCharge}</td>
+                                                                <td className="px-4 py-3 font-medium text-slate-600">₹{item.partsCost}</td>
+                                                                <td className="px-4 py-3 font-bold text-indigo-600">₹{item.total}</td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
@@ -194,7 +194,6 @@ function EstimateReport() {
     );
 }
 
-// UI HELPER COMPONENTS
 function Label({ text, color = "text-slate-400" }) {
     return <p className={`text-[10px] font-black uppercase tracking-widest ${color}`}>{text}</p>;
 }
@@ -206,7 +205,6 @@ function StatusBadge({ status }) {
         Rejected: { icon: XCircle, class: "bg-rose-500/20 text-rose-400 border-rose-500/20" },
     };
     const { icon: Icon, class: className } = config[status] || config.Pending;
-
     return (
         <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest ${className}`}>
             <Icon size={14} />

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ClipboardList, Plus, Save, X, ChevronLeft } from "lucide-react";
 
 function InspectionReport() {
+    
     const { jobId } = useParams();
     const navigate = useNavigate();
 

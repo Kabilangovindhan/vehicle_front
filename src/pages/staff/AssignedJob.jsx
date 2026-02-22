@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { 
-    Loader2, Wrench, Car, 
-    ClipboardList, CheckCircle2, 
-    Info, Settings, Plus, X, Save,
-    Calculator, Receipt, ChevronRight,
-    AlertCircle
-} from "lucide-react";
+import { Loader2, Wrench, Car, ClipboardList, CheckCircle2, Info, Settings, Plus, X, Save, Calculator, Receipt, ChevronRight, AlertCircle } from "lucide-react";
 
 function AssignedJob() {
     const [jobs, setJobs] = useState([]);
@@ -13,14 +7,12 @@ function AssignedJob() {
     const [activeJob, setActiveJob] = useState(null);
     const [activeTab, setActiveTab] = useState("details");
     const [prefilledIssues, setPrefilledIssues] = useState([]);
-
     const phone = sessionStorage.getItem("phone");
 
     useEffect(() => {
         fetchJobs();
     }, []);
 
-    // Prevent background scrolling when popup is open
     useEffect(() => {
         if (activeJob) {
             document.body.style.overflow = "hidden";
@@ -42,9 +34,9 @@ function AssignedJob() {
     };
 
     const handleStatusUpdate = (jobId, newStatus) => {
-        setJobs(prev => prev.map(job => job._id === jobId ? { ...job, jobStatus: newStatus } : job));
+        setJobs((prev) => prev.map((job) => (job._id === jobId ? { ...job, jobStatus: newStatus } : job)));
         if (activeJob?._id === jobId) {
-            setActiveJob(prev => ({ ...prev, jobStatus: newStatus }));
+            setActiveJob((prev) => ({ ...prev, jobStatus: newStatus }));
         }
     };
 
@@ -75,9 +67,7 @@ function AssignedJob() {
                             Assigned <span className="text-indigo-600">Jobs</span>
                         </h1>
                     </div>
-                    <div className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full md:hidden">
-                        {jobs.length} Active
-                    </div>
+                    <div className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full md:hidden">{jobs.length} Active</div>
                 </div>
             </div>
 
@@ -85,7 +75,7 @@ function AssignedJob() {
                 {/* Desktop Table View */}
                 <div className="hidden md:block bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
+                        <table className="w-full text-center">
                             <thead className="bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
                                 <tr>
                                     <th className="p-4">Job Details</th>
@@ -97,25 +87,31 @@ function AssignedJob() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {jobs.map(job => (
+                                {jobs.map((job) => (
                                     <tr key={job._id} className="hover:bg-slate-50 transition-colors group">
-                                        <td className="p-4">
-                                            <p className="font-mono text-[11px] text-slate-400 mb-1">#{job._id.slice(-6).toUpperCase()}</p>
+                                        <td className="px-8 text-left">
+                                            <p className="font-mono text-[13px] text-slate-400">#{job._id.slice(-6).toUpperCase()}</p>
                                             <p className="font-bold text-slate-700 flex items-center gap-1">
                                                 <Car size={14} className="text-indigo-500" /> {job.booking?.vehicle?.vehicleNumber}
                                             </p>
                                         </td>
                                         <td className="p-4 font-medium text-slate-600">{job.booking?.customer?.name}</td>
                                         <td className="p-4">
-                                            <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded">
-                                                {job.booking?.serviceType}
-                                            </span>
+                                            <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded">{job.booking?.serviceType}</span>
                                         </td>
-                                        <td className="p-4"><PriorityBadge priority={job.priority} /></td>
-                                        <td className="p-4"><StatusBadge status={job.jobStatus} /></td>
+                                        <td className="p-4">
+                                            <PriorityBadge priority={job.priority} />
+                                        </td>
+                                        <td className="p-4">
+                                            <StatusBadge status={job.jobStatus} />
+                                        </td>
                                         <td className="p-4 text-center">
                                             <button
-                                                onClick={() => { setActiveJob(job); setActiveTab("details"); setPrefilledIssues([]); }}
+                                                onClick={() => {
+                                                    setActiveJob(job);
+                                                    setActiveTab("details");
+                                                    setPrefilledIssues([]);
+                                                }}
                                                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter transition-all shadow-md active:scale-95"
                                             >
                                                 Open Job
@@ -130,8 +126,15 @@ function AssignedJob() {
 
                 {/* Mobile List View */}
                 <div className="md:hidden space-y-3 mb-8">
-                    {jobs.map(job => (
-                        <div key={job._id} onClick={() => { setActiveJob(job); setActiveTab("details"); }} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm active:bg-slate-50 transition-colors">
+                    {jobs.map((job) => (
+                        <div
+                            key={job._id}
+                            onClick={() => {
+                                setActiveJob(job);
+                                setActiveTab("details");
+                            }}
+                            className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm active:bg-slate-50 transition-colors"
+                        >
                             <div className="flex justify-between items-start mb-3">
                                 <div>
                                     <p className="font-mono text-[10px] text-slate-400">#{job._id.slice(-6).toUpperCase()}</p>
@@ -157,10 +160,7 @@ function AssignedJob() {
                 {/* POPUP MODAL FOR ACTIVE JOB */}
                 {activeJob && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-6">
-                        <div 
-                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
-                            onClick={() => setActiveJob(null)}
-                        />
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setActiveJob(null)} />
                         <div className="relative bg-white w-full max-w-5xl max-h-[90vh] overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
                             <div className="bg-slate-900 p-5 md:p-6 text-white flex items-center justify-between shrink-0">
                                 <div className="flex items-center gap-4">
@@ -178,10 +178,10 @@ function AssignedJob() {
                             </div>
 
                             <div className="flex overflow-x-auto scrollbar-hide bg-slate-50 border-b border-slate-100 px-2 shrink-0">
-                                <TabButton label="Overview" tab="details" icon={<Info size={14}/>} activeTab={activeTab} setActiveTab={setActiveTab} />
-                                <TabButton label="Inspect" tab="inspection" icon={<Car size={14}/>} activeTab={activeTab} setActiveTab={setActiveTab} />
-                                <TabButton label="Estimate" tab="estimate" icon={<Calculator size={14}/>} activeTab={activeTab} setActiveTab={setActiveTab} />
-                                <TabButton label="Status" tab="status" icon={<Settings size={14}/>} activeTab={activeTab} setActiveTab={setActiveTab} />
+                                <TabButton label="Overview" tab="details" icon={<Info size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
+                                <TabButton label="Inspect" tab="inspection" icon={<Car size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
+                                <TabButton label="Estimate" tab="estimate" icon={<Calculator size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
+                                <TabButton label="Status" tab="status" icon={<Settings size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-5 md:p-10">
@@ -205,20 +205,18 @@ function AssignedJob() {
     );
 }
 
-// --- SUB COMPONENTS ---
-
 function EstimateForm({ jobId, prefilledIssues }) {
     const [items, setItems] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (prefilledIssues && prefilledIssues.length > 0) {
-            const mappedItems = prefilledIssues.map(issue => ({
+            const mappedItems = prefilledIssues.map((issue) => ({
                 issueTitle: issue.title,
                 description: issue.description,
                 labourCharge: 0,
                 partsCost: 0,
-                total: 0
+                total: 0,
             }));
             setItems(mappedItems);
         }
@@ -239,10 +237,14 @@ function EstimateForm({ jobId, prefilledIssues }) {
             const res = await fetch(`http://localhost:5000/api/assignedJob/estimate/${jobId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ job: jobId, items, tax, grandTotal })
+                body: JSON.stringify({ job: jobId, items, tax, grandTotal }),
             });
             if (res.ok) alert("Estimate Submitted Successfully");
-        } catch (error) { console.error(error); } finally { setIsSubmitting(false); }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (items.length === 0) {
@@ -256,17 +258,17 @@ function EstimateForm({ jobId, prefilledIssues }) {
     }
 
     return (
-        <div className="space-y-6 max-w-4xl mx-auto">
+        <div className="space-y-6 mx-auto">
             <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm min-w-[600px]">
+                    <table className="w-full text-sm min-w-[600px] text-center">
                         <thead className="bg-slate-50 border-b border-slate-200">
                             <tr className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <th className="p-4 text-left">Identified Issue</th>
-                                <th className="p-4 text-right">Labour (₹)</th>
-                                <th className="p-4 text-right">Parts (₹)</th>
-                                <th className="p-4 text-right">Line Total</th>
-                                <th className="p-4 text-center"></th>
+                                <th className="p-4">Identified Issue</th>
+                                <th className="p-4">Labour (₹)</th>
+                                <th className="p-4">Parts (₹)</th>
+                                <th className="p-4">Line Total</th>
+                                <th className="p-4"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -276,11 +278,10 @@ function EstimateForm({ jobId, prefilledIssues }) {
                                         <div className="font-bold text-slate-700">{item.issueTitle}</div>
                                         <div className="text-[10px] text-slate-400 truncate max-w-[200px]">{item.description}</div>
                                     </td>
-                                    <td className="p-4 text-right">
-                                        <input 
-                                            type="number" 
-                                            placeholder="cost"
-                                            className="w-24 text-right p-2 rounded-lg bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white outline-none font-mono font-bold transition-all placeholder:text-slate-300 placeholder:font-sans placeholder:text-[10px]"
+                                    <td className="p-4">
+                                        <input
+                                            type="number"
+                                            className="w-24 p-2 rounded-lg bg-slate-50 border border-indigo-500 focus:border-indigo-500 focus:bg-white outline-none font-mono font-bold transition-all placeholder:text-slate-300 placeholder:font-sans placeholder:text-[10px]"
                                             value={item.labourCharge === 0 ? "" : item.labourCharge}
                                             onChange={(e) => {
                                                 const val = parseFloat(e.target.value) || 0;
@@ -291,11 +292,10 @@ function EstimateForm({ jobId, prefilledIssues }) {
                                             }}
                                         />
                                     </td>
-                                    <td className="p-4 text-right">
-                                        <input 
-                                            type="number" 
-                                            placeholder="cost"
-                                            className="w-24 text-right p-2 rounded-lg bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white outline-none font-mono font-bold transition-all placeholder:text-slate-300 placeholder:font-sans placeholder:text-[10px]"
+                                    <td className="p-4">
+                                        <input
+                                            type="number"
+                                            className="w-24  p-2 rounded-lg bg-slate-50 border border-indigo-500 focus:border-indigo-500 focus:bg-white outline-none font-mono font-bold transition-all placeholder:text-slate-300 placeholder:font-sans placeholder:text-[10px]"
                                             value={item.partsCost === 0 ? "" : item.partsCost}
                                             onChange={(e) => {
                                                 const val = parseFloat(e.target.value) || 0;
@@ -306,12 +306,10 @@ function EstimateForm({ jobId, prefilledIssues }) {
                                             }}
                                         />
                                     </td>
-                                    <td className="p-4 text-right font-black text-indigo-600 text-base">
-                                        ₹{item.total.toLocaleString('en-IN')}
-                                    </td>
+                                    <td className="p-4 font-black text-indigo-600 text-base">₹{item.total.toLocaleString("en-IN")}</td>
                                     <td className="p-4 text-center">
                                         <button onClick={() => removeItem(i)} className="text-slate-300 hover:text-rose-500 transition-colors p-2">
-                                            <X size={18}/>
+                                            <X size={18} />
                                         </button>
                                     </td>
                                 </tr>
@@ -323,19 +321,19 @@ function EstimateForm({ jobId, prefilledIssues }) {
                     <div className="flex gap-8">
                         <div>
                             <p className="text-[10px] font-black uppercase opacity-50 tracking-widest">Subtotal</p>
-                            <p className="text-lg font-bold">₹{subTotal.toLocaleString('en-IN')}</p>
+                            <p className="text-lg font-bold">₹{subTotal.toLocaleString("en-IN")}</p>
                         </div>
                         <div>
                             <p className="text-[10px] font-black uppercase opacity-50 tracking-widest">GST (18%)</p>
-                            <p className="text-lg font-bold">₹{tax.toLocaleString('en-IN')}</p>
+                            <p className="text-lg font-bold">₹{tax.toLocaleString("en-IN")}</p>
                         </div>
                         <div className="border-l border-white/10 pl-8">
                             <p className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Grand Total</p>
-                            <p className="text-2xl font-black">₹{grandTotal.toLocaleString('en-IN')}</p>
+                            <p className="text-2xl font-black">₹{grandTotal.toLocaleString("en-IN")}</p>
                         </div>
                     </div>
                     <button onClick={saveEstimate} disabled={isSubmitting} className="w-full sm:w-auto bg-indigo-600 px-8 py-4 rounded-2xl font-black uppercase text-xs flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all active:scale-95">
-                        {isSubmitting ? <Loader2 className="animate-spin" size={18}/> : <Receipt size={18}/>} 
+                        {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Receipt size={18} />}
                         <span>Send Final Estimate</span>
                     </button>
                 </div>
@@ -366,28 +364,42 @@ function InnerInspectionForm({ jobId, onComplete }) {
             const res = await fetch(`http://localhost:5000/api/inspectionReport/save/${jobId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ job: jobId, issuesFound: issues, remarks })
+                body: JSON.stringify({ job: jobId, issuesFound: issues, remarks }),
             });
-            if (res.ok) { alert("Inspection Report Saved!"); onComplete(issues); }
-        } catch (error) { console.error(error); } finally { setIsSubmitting(false); }
+            if (res.ok) {
+                alert("Inspection Report Saved!");
+                onComplete(issues);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
-        <div className="space-y-6 max-w-2xl mx-auto">
+        <div className="space-y-6 mx-auto">
             <div className="space-y-3">
                 <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">Log Findings</label>
-                <div className="flex flex-col gap-2">
-                    <input value={input.title} onChange={e => setInput({...input, title: e.target.value})} placeholder="Issue Title (e.g. Brake Wear)" className="w-full border border-slate-200 p-3 rounded-xl text-sm font-medium outline-none focus:border-indigo-500" />
-                    <div className="flex gap-2">
-                        <input value={input.description} onChange={e => setInput({...input, description: e.target.value})} placeholder="Detailed description..." className="flex-1 border border-slate-200 p-3 rounded-xl text-sm font-medium outline-none focus:border-indigo-500" />
-                        <button onClick={addIssue} className="bg-slate-900 text-white px-4 rounded-xl hover:bg-slate-800 transition-all"><Plus size={18}/></button>
+                <div className="flex gap-3 items-end">
+                    <div className="flex-1 flex flex-col gap-3">
+                        <input value={input.title} onChange={(e) => setInput({ ...input, title: e.target.value })} placeholder="Issue Title (e.g. Brake Wear)" className="w-full border border-slate-200 p-3 rounded-xl text-sm font-medium outline-none focus:border-indigo-500" />
+                        <input value={input.description} onChange={(e) => setInput({ ...input, description: e.target.value })} placeholder="Detailed description..." className="w-full border border-slate-200 p-3 rounded-xl text-sm font-medium outline-none focus:border-indigo-500" />
                     </div>
+                    <button onClick={addIssue} className="h-[46px] w-[46px] bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center shadow-sm">
+                        <Plus size={18} strokeWidth={2.5} />
+                    </button>
                 </div>
-                <div className="grid grid-cols-1 gap-2 mt-4">
+                <div className="grid grid-cols-1 gap-2 mt-3">
                     {issues.map((issue, index) => (
                         <div key={index} className="flex justify-between items-start bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
-                            <div><p className="text-sm font-black text-indigo-900">{issue.title}</p><p className="text-xs text-indigo-600/70 font-medium">{issue.description}</p></div>
-                            <button onClick={() => removeIssue(index)} className="text-indigo-300 hover:text-rose-500 p-1"><X size={18}/></button>
+                            <div>
+                                <p className="text-sm font-black text-indigo-900">{issue.title}</p>
+                                <p className="text-xs text-indigo-600/70 font-medium">{issue.description}</p>
+                            </div>
+                            <button onClick={() => removeIssue(index)} className="text-indigo-300 hover:text-rose-500 p-1">
+                                <X size={18} />
+                            </button>
                         </div>
                     ))}
                 </div>
@@ -397,21 +409,20 @@ function InnerInspectionForm({ jobId, onComplete }) {
                 <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} placeholder="Summary of vehicle condition..." rows="3" className="w-full border border-slate-200 p-3 rounded-xl focus:border-indigo-500 outline-none transition-all resize-none text-sm font-medium" />
             </div>
             <button onClick={saveInspection} disabled={isSubmitting} className="w-full bg-indigo-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50">
-                {isSubmitting ? <Loader2 className="animate-spin" size={16}/> : <Save size={16} />}
+                {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                 {isSubmitting ? "Uploading..." : "Submit Inspection Report"}
             </button>
         </div>
     );
 }
 
-// --- UI HELPERS ---
 function PriorityBadge({ priority }) {
     const styles = priority === "High" ? "bg-rose-50 text-rose-600 ring-rose-100" : "bg-amber-50 text-amber-600 ring-amber-100";
     return <span className={`px-2 py-0.5 rounded text-[9px] md:text-[10px] font-black uppercase tracking-tighter ring-1 ${styles}`}>{priority}</span>;
 }
 
 function StatusBadge({ status }) {
-    const colors = { "Completed": "bg-emerald-50 text-emerald-600 ring-emerald-100", "Working": "bg-blue-50 text-blue-600 ring-blue-100", "Ready Delivery": "bg-indigo-50 text-indigo-600 ring-indigo-100" };
+    const colors = { Completed: "bg-emerald-50 text-emerald-600 ring-emerald-100", Working: "bg-blue-50 text-blue-600 ring-blue-100", "Ready Delivery": "bg-indigo-50 text-indigo-600 ring-indigo-100" };
     const style = colors[status] || "bg-slate-100 text-slate-500 ring-slate-200";
     return <span className={`px-2 py-0.5 rounded text-[9px] md:text-[10px] font-black uppercase tracking-tighter ring-1 ${style}`}>{status}</span>;
 }
@@ -443,11 +454,15 @@ function StatusUpdate({ job, onUpdate }) {
             await fetch(`http://localhost:5000/api/jobManagement/update/${job._id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status })
+                body: JSON.stringify({ status }),
             });
             onUpdate(job._id, status);
             alert("Status Updated");
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -464,7 +479,7 @@ function StatusUpdate({ job, onUpdate }) {
                 </select>
             </div>
             <button onClick={updateStatus} disabled={loading} className="w-full md:w-auto md:mt-6 bg-emerald-600 text-white px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform">
-                {loading ? <Loader2 className="animate-spin" size={16}/> : <CheckCircle2 size={16}/>} Update Status
+                {loading ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />} Update Status
             </button>
         </div>
     );

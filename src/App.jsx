@@ -17,7 +17,8 @@ import EstimateApproval from "./pages/customer/EstimateApproval";
 
 
 // Staff Routes
-import JobManagement from "./pages/staff/JobManagement";
+import ApprovalQueue from "./pages/staff/ApprovalQueue";
+import ServiceUpdate from "./pages/staff/ServiceUpdate";
 import InspectionReport from "./pages/staff/InspectionReport";
 import Estimate from "./pages/staff/Estimation";
 import AssignedJob from "./pages/staff/AssignedJob";
@@ -43,10 +44,11 @@ function App() {
 
 
 				{/* Staff Routes */}
-				<Route path="job-managment" element={<JobManagement />} />
 				<Route path="inspection/:jobId" element={<InspectionReport />} />
 				<Route path="estimate/:jobId" element={<Estimate />} />
 				<Route path="assigned-jobs" element={<AssignedJob />} />
+                <Route path="approval-queue" element={<ApprovalQueue />} />
+                <Route path="service-updates" element={<ServiceUpdate />} />
 
 			</Route>
 		</Routes>
