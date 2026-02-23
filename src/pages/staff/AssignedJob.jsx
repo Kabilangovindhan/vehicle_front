@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Loader2, Wrench, Car, ClipboardList, CheckCircle2, Info, Settings, Plus, X, Save, Calculator, Receipt, ChevronRight, AlertCircle } from "lucide-react";
 
 function AssignedJob() {
+
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeJob, setActiveJob] = useState(null);
@@ -55,7 +56,7 @@ function AssignedJob() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-12">
+        <div className="min-h-screen bg-slate-50">
             {/* Header */}
             <div className="bg-white border-b border-slate-200 sticky top-0 z-20 px-4 py-4 md:py-6 md:px-8">
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -71,58 +72,68 @@ function AssignedJob() {
                 </div>
             </div>
 
-            <div className="max-w-6xl mx-auto p-3 md:p-8">
+            <div className="mx-auto p-3 md:p-8">
                 {/* Desktop Table View */}
-                <div className="hidden md:block bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-center">
-                            <thead className="bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
-                                <tr>
-                                    <th className="p-4">Job Details</th>
-                                    <th className="p-4">Customer</th>
-                                    <th className="p-4">Service</th>
-                                    <th className="p-4">Priority</th>
-                                    <th className="p-4">Status</th>
-                                    <th className="p-4 text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {jobs.map((job) => (
-                                    <tr key={job._id} className="hover:bg-slate-50 transition-colors group">
-                                        <td className="px-8 text-left">
-                                            <p className="font-mono text-[13px] text-slate-400">#{job._id.slice(-6).toUpperCase()}</p>
-                                            <p className="font-bold text-slate-700 flex items-center gap-1">
-                                                <Car size={14} className="text-indigo-500" /> {job.booking?.vehicle?.vehicleNumber}
-                                            </p>
-                                        </td>
-                                        <td className="p-4 font-medium text-slate-600">{job.booking?.customer?.name}</td>
-                                        <td className="p-4">
-                                            <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded">{job.booking?.serviceType}</span>
-                                        </td>
-                                        <td className="p-4">
-                                            <PriorityBadge priority={job.priority} />
-                                        </td>
-                                        <td className="p-4">
-                                            <StatusBadge status={job.jobStatus} />
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            <button
-                                                onClick={() => {
-                                                    setActiveJob(job);
-                                                    setActiveTab("details");
-                                                    setPrefilledIssues([]);
-                                                }}
-                                                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter transition-all shadow-md active:scale-95"
-                                            >
-                                                Open Job
-                                            </button>
-                                        </td>
+                {jobs.length > 0 ? (
+                    <div className="hidden md:block bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-center">
+                                <thead className="bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
+                                    <tr>
+                                        <th className="p-4">Job Details</th>
+                                        <th className="p-4">Customer</th>
+                                        <th className="p-4">Service</th>
+                                        <th className="p-4">Priority</th>
+                                        <th className="p-4">Status</th>
+                                        <th className="p-4 text-center">Action</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {jobs.map((job) => (
+                                        <tr key={job._id} className="hover:bg-slate-50 transition-colors group">
+                                            <td className="px-8 text-left">
+                                                <p className="font-mono text-[13px] text-slate-400">#{job._id.slice(-6).toUpperCase()}</p>
+                                                <p className="font-bold text-slate-700 flex items-center gap-1">
+                                                    <Car size={14} className="text-indigo-500" /> {job.booking?.vehicle?.vehicleNumber}
+                                                </p>
+                                            </td>
+                                            <td className="p-4 font-medium text-slate-600">{job.booking?.customer?.name}</td>
+                                            <td className="p-4">
+                                                <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded">{job.booking?.serviceType}</span>
+                                            </td>
+                                            <td className="p-4">
+                                                <PriorityBadge priority={job.priority} />
+                                            </td>
+                                            <td className="p-4">
+                                                <StatusBadge status={job.jobStatus} />
+                                            </td>
+                                            <td className="p-4 text-center">
+                                                <button
+                                                    onClick={() => {
+                                                        setActiveJob(job);
+                                                        setActiveTab("details");
+                                                        setPrefilledIssues([]);
+                                                    }}
+                                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter transition-all shadow-md active:scale-95"
+                                                >
+                                                    Open Job
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="bg-white rounded-3xl p-16 text-center border border-slate-100 shadow-sm">
+                        <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <AlertCircle size={32} className="text-slate-300" />
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-800">No Active Jobs</h2>
+                        <p className="text-slate-500 mt-1">There is no active job at the moment</p>
+                    </div>
+                )}
 
                 {/* Mobile List View */}
                 <div className="md:hidden space-y-3 mb-8">
@@ -181,7 +192,6 @@ function AssignedJob() {
                                 <TabButton label="Overview" tab="details" icon={<Info size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
                                 <TabButton label="Inspect" tab="inspection" icon={<Car size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
                                 <TabButton label="Estimate" tab="estimate" icon={<Calculator size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
-                                <TabButton label="Status" tab="status" icon={<Settings size={14} />} activeTab={activeTab} setActiveTab={setActiveTab} />
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-5 md:p-10">
@@ -441,46 +451,6 @@ function DetailItem({ label, value }) {
         <div className="flex flex-col gap-1 border-l-2 border-slate-100 pl-4">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</span>
             <span className="text-sm font-bold text-slate-700">{value}</span>
-        </div>
-    );
-}
-
-function StatusUpdate({ job, onUpdate }) {
-    const [status, setStatus] = useState(job.jobStatus);
-    const [loading, setLoading] = useState(false);
-    const updateStatus = async () => {
-        setLoading(true);
-        try {
-            await fetch(`http://localhost:5000/api/jobManagement/update/${job._id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status }),
-            });
-            onUpdate(job._id, status);
-            alert("Status Updated");
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="flex flex-col md:flex-row gap-4 items-center bg-slate-50 p-5 md:p-6 rounded-2xl border border-slate-100">
-            <div className="flex-1 w-full">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Set Milestone</p>
-                <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full bg-white border border-slate-200 p-3 rounded-xl font-bold text-slate-700 outline-none appearance-none">
-                    <option>Assigned</option>
-                    <option>Inspection</option>
-                    <option>Waiting Approval</option>
-                    <option>Working</option>
-                    <option>Completed</option>
-                    <option>Ready Delivery</option>
-                </select>
-            </div>
-            <button onClick={updateStatus} disabled={loading} className="w-full md:w-auto md:mt-6 bg-emerald-600 text-white px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform">
-                {loading ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />} Update Status
-            </button>
         </div>
     );
 }
