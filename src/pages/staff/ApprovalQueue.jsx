@@ -22,6 +22,29 @@ function ApprovalQueue() {
         }
     };
 
+    const startWork = async (jobId) => {
+
+        if (!window.confirm("Start work on this vehicle?")) return;
+
+        try {
+
+            await fetch(
+                `http://localhost:5000/api/approvalQueue/startWork/${jobId}`,
+                {
+                    method: "PUT"
+                }
+            );
+
+            fetchApprovalQueue();
+
+        }
+        catch (err) {
+
+            console.error(err);
+
+        }
+
+    };
     return (
         <div className="min-h-screen bg-slate-50">
             <div className="mx-auto">
@@ -114,13 +137,21 @@ function ApprovalQueue() {
                                                 <span className="inline-flex items-center px-3 py-1 bg-amber-50 border border-amber-100 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-tighter">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2 animate-pulse" />
                                                     {job.jobStatus}
+                                                    {job.estimateStatus && (
+                                                        <span className="ml-2 text-[9px] font-bold text-slate-400">
+                                                            • {job.estimateStatus}
+                                                        </span>
+                                                    )}
                                                 </span>
                                             </td>
 
                                             {/* Action Column */}
                                             <td className="px-6 py-5">
-                                                <button className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all active:scale-95 shadow-md shadow-slate-200">
-                                                    View Details
+                                                <button
+                                                    onClick={() => startWork(job._id)}
+                                                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all active:scale-95 shadow-md shadow-slate-200"
+                                                >
+                                                    START WORK
                                                     <ArrowUpRight size={14} />
                                                 </button>
                                             </td>
