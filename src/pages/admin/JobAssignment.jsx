@@ -139,7 +139,7 @@ function JobAssignment() {
 
                 {loading ? (
                     <div className="flex justify-center py-20"><Loader2 className="animate-spin text-indigo-600" size={32} /></div>
-                ) : (
+                ) : filteredBookings.length > 0 ? (
                     <div className="grid gap-6">
                         {filteredBookings.map((b) => (
                             <div key={b._id} className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
@@ -194,6 +194,17 @@ function JobAssignment() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                ) : (
+                    /* --- NO ACTIVE JOBS EMPTY STATE --- */
+                    <div className="bg-white rounded-[2rem] border border-slate-200 border-dashed py-32 flex flex-col items-center justify-center text-center shadow-sm">
+                        <div className="bg-slate-50 p-6 rounded-full mb-6">
+                            <AlertCircle size={48} className="text-slate-300" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-800 mb-2">No Active Jobs</h3>
+                        <p className="text-slate-500 font-medium max-w-xs mx-auto">
+                            There is no active job at the moment.
+                        </p>
                     </div>
                 )}
             </div>
