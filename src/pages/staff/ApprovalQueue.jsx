@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Clock, Car, User, Phone, Wrench, ArrowUpRight, AlertCircle, RefreshCw, ClipboardList } from "lucide-react";
+import { Car, User, Phone, Wrench, ArrowUpRight, AlertCircle, RefreshCw, ClipboardList, CheckCircle2, Clock } from "lucide-react";
 
 function ApprovalQueue() {
     const [jobs, setJobs] = useState([]);
@@ -23,28 +23,17 @@ function ApprovalQueue() {
     };
 
     const startWork = async (jobId) => {
-
         if (!window.confirm("Start work on this vehicle?")) return;
-
         try {
-
-            await fetch(
-                `http://localhost:5000/api/approvalQueue/startWork/${jobId}`,
-                {
-                    method: "PUT"
-                }
-            );
-
+            await fetch(`http://localhost:5000/api/approvalQueue/startWork/${jobId}`, {
+                method: "PUT"
+            });
             fetchApprovalQueue();
-
-        }
-        catch (err) {
-
+        } catch (err) {
             console.error(err);
-
         }
-
     };
+
     return (
         <div className="min-h-screen bg-slate-50">
             <div className="mx-auto">
@@ -88,7 +77,8 @@ function ApprovalQueue() {
                                         <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400 text-left">Vehicle Details</th>
                                         <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400 text-left">Customer</th>
                                         <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400">Service</th>
-                                        <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                                        <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400">Job Phase</th>
+                                        <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400">Estimate Status</th>
                                         <th className="px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400">Action</th>
                                     </tr>
                                 </thead>
@@ -101,7 +91,7 @@ function ApprovalQueue() {
                                                     <div className="bg-slate-900 p-2 rounded-lg">
                                                         <Car size={18} className="text-indigo-400" />
                                                     </div>
-                                                    <div>
+                                                    <div className="text-left">
                                                         <div className="font-black text-slate-800 tracking-wider">{job.booking?.vehicle?.vehicleNumber || "N/A"}</div>
                                                         <div className="text-xs text-slate-500 font-medium">
                                                             {job.booking?.vehicle?.brand} {job.booking?.vehicle?.model}
@@ -111,7 +101,7 @@ function ApprovalQueue() {
                                             </td>
 
                                             {/* Customer Column */}
-                                            <td className="px-6 py-5">
+                                            <td className="px-6 py-5 text-left">
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
                                                         <User size={14} className="text-slate-400" />
@@ -132,27 +122,50 @@ function ApprovalQueue() {
                                                 </div>
                                             </td>
 
-                                            {/* Status Column */}
+                                            {/* NEW: Job Phase Column */}
                                             <td className="px-6 py-5">
-                                                <span className="inline-flex items-center px-3 py-1 bg-amber-50 border border-amber-100 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-tighter">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2 animate-pulse" />
+                                                <span className="inline-flex items-center px-3 py-1 bg-slate-100 border border-slate-200 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-tighter">
+                                                    <Clock size={10} className="mr-1.5" />
                                                     {job.jobStatus}
-                                                    {job.estimateStatus && (
-                                                        <span className="ml-2 text-[9px] font-bold text-slate-400">
-                                                            • {job.estimateStatus}
-                                                        </span>
-                                                    )}
+                                                </span>
+                                            </td>
+
+                                            {/* NEW: Estimate Status Column */}
+                                            <td className="px-6 py-5">
+                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border ${job.estimateStatus === 'Approved'
+                                                        ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                                                        : 'bg-amber-50 border-amber-100 text-amber-600'
+                                                    }`}>
+                                                    <span className={`w-1.5 h-1.5 rounded-full mr-2 ${job.estimateStatus === 'Approved' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
+                                                        }`} />
+                                                    {job.estimateStatus}
                                                 </span>
                                             </td>
 
                                             {/* Action Column */}
+                                            {/* Action Column */}
                                             <td className="px-6 py-5">
                                                 <button
                                                     onClick={() => startWork(job._id)}
-                                                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all active:scale-95 shadow-md shadow-slate-200"
+                                                    // ENABLE BUTTON ONLY IF STATUS IS 'Approved'
+                                                    disabled={job.estimateStatus !== "Approved"}
+                                                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md 
+            ${job.estimateStatus === "Approved"
+                                                            ? "bg-slate-900 text-white hover:bg-indigo-600 active:scale-95 shadow-slate-200 cursor-pointer"
+                                                            : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 shadow-none"
+                                                        }`}
                                                 >
-                                                    START WORK
-                                                    <ArrowUpRight size={14} />
+                                                    {job.estimateStatus === "Approved" ? (
+                                                        <>
+                                                            START WORK
+                                                            <ArrowUpRight size={14} />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            LOCKED
+                                                            <AlertCircle size={14} />
+                                                        </>
+                                                    )}
                                                 </button>
                                             </td>
                                         </tr>
