@@ -63,6 +63,31 @@ function ServiceUpdate() {
                 return "bg-slate-50 border-slate-100 text-slate-600";
         }
     };
+    const goToNextStep = async (jobId) => {
+    try {
+
+        const res = await fetch(
+            `http://localhost:5000/api/serviceUpdate/jobs/${jobId}/next`,
+            {
+                method: "PUT"
+            }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+
+            // Refresh list automatically
+            fetchJobs();
+
+        } else {
+            alert(data.message);
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+};
 
     return (
         <div className="min-h-screen">
@@ -177,8 +202,11 @@ function ServiceUpdate() {
                                             </td>
 
                                             <td className="px-6 py-5">
-                                                <button className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black hover:bg-indigo-600 transition-all">
-                                                    Manage
+                                                <button
+                                                    onClick={() => goToNextStep(job._id)}
+                                                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black hover:bg-indigo-600 transition-all"
+                                                >
+                                                    Go to next
                                                     <ArrowUpRight size={14} />
                                                 </button>
                                             </td>
