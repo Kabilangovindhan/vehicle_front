@@ -9,6 +9,8 @@ import Layout from "./layout/Layout";
 import CustomerManagement from "./pages/admin/CustomerManagement";
 import JobAssignment from "./pages/admin/JobAssignment";
 import JobControlCenter from "./pages/admin/JobControlCenter";
+import InspectionEstimationReport from "./pages/admin/InspectionEstimationReport";
+import BillingInvoice from "./pages/admin/BillingInvoice";
 
 // Customer Routes
 import MyVehicle from "./pages/customer/MyVehicle";
@@ -37,6 +39,9 @@ function App() {
 				<Route path="customer-management" element={<CustomerManagement />} />
 				<Route path="job-assignment" element={<JobAssignment />} />
 				<Route path="job-control-center" element={<JobControlCenter />} />
+				<Route path="inspection-estimation" element={<InspectionEstimationReport />} />
+				<Route path="billing-invoice" element={<BillingInvoice />} />
+
 
 				{/* Customer Routes */}
 				<Route path="my-vehicles" element={<MyVehicle />} />

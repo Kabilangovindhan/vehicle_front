@@ -43,7 +43,7 @@ function Layout() {
             { path: "/layout/job-control-center", label: "Job Control Center", icon: ShieldCheck },
             { path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
             { path: "/layout/inventory", label: "Spare Parts Inventory", icon: Package },
-            { path: "/layout/billing-admin", label: "Billing & Invoice", icon: CreditCard },
+            { path: "/layout/billing-invoice", label: "Billing & Invoice", icon: CreditCard },
             { path: "/layout/records", label: "Service Records", icon: History },
             { path: "/layout/reports", label: "Reports & Analytics", icon: Activity },
             { path: "/layout/notif-center", label: "Notification Center", icon: Bell },
