@@ -70,6 +70,8 @@ function Auth() {
 
 				if (res.ok) {
 					sessionStorage.setItem("token", data.token);
+					sessionStorage.setItem("userId", data.user._id);
+
 					sessionStorage.setItem("name", data.user.name);
 					sessionStorage.setItem("phone", data.user.phone);
 					sessionStorage.setItem("role", data.user.role);
