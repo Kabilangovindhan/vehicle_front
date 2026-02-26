@@ -8,6 +8,7 @@ import Layout from "./layout/Layout";
 // Admin Routes
 import CustomerManagement from "./pages/admin/CustomerManagement";
 import JobAssignment from "./pages/admin/JobAssignment";
+import JobControlCenter from "./pages/admin/JobControlCenter";
 
 // Customer Routes
 import MyVehicle from "./pages/customer/MyVehicle";
@@ -35,6 +36,7 @@ function App() {
 				{/* Admin Routes */}
 				<Route path="customer-management" element={<CustomerManagement />} />
 				<Route path="job-assignment" element={<JobAssignment />} />
+				<Route path="job-control-center" element={<JobControlCenter />} />
 
 				{/* Customer Routes */}
 				<Route path="my-vehicles" element={<MyVehicle />} />

@@ -40,7 +40,7 @@ function Layout() {
             { path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
             { path: "/layout/customer-management	", label: "Customer Management", icon: Users },
             { path: "/layout/job-assignment", label: "Job Assignment", icon: Calendar },
-            { path: "/layout/job-control", label: "Job Control Center", icon: ShieldCheck },
+            { path: "/layout/job-control-center", label: "Job Control Center", icon: ShieldCheck },
             { path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
             { path: "/layout/inventory", label: "Spare Parts Inventory", icon: Package },
             { path: "/layout/billing-admin", label: "Billing & Invoice", icon: CreditCard },
