@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
   Car, ClipboardList, IndianRupee, CheckCircle2, XCircle, 
-  Clock, User, AlertCircle, FileText, Printer, ChevronRight
+  Clock, User, AlertCircle, FileText, Printer, ChevronRight, Edit3, Save, X
 } from "lucide-react";
 
-function AdminInspectionEstimateReport() {
+function InspectionEstimateReport() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingItem, setEditingItem] = useState(null); // Tracks the item being edited
 
   useEffect(() => {
     fetchData();
@@ -21,6 +22,23 @@ function AdminInspectionEstimateReport() {
       console.error("Fetch error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (updatedData) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/inspectionestimateReport/update/${updatedData.estimate._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (res.ok) {
+        setEditingItem(null);
+        fetchData(); // Refresh list
+      }
+    } catch (err) {
+      console.error("Update error:", err);
     }
   };
 
@@ -74,23 +92,28 @@ function AdminInspectionEstimateReport() {
                     </div>
                     <div className="flex items-center gap-4">
                       <StatusBadge status={est.approvalStatus} />
+                      <button 
+                        onClick={() => setEditingItem(item)}
+                        className="p-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors" 
+                        title="Edit Report"
+                      >
+                        <Edit3 size={18}/>
+                      </button>
                       <button className="text-slate-400 hover:text-white transition-colors" title="Print"><Printer size={20}/></button>
                     </div>
                   </div>
 
                   {/* Grid Layout */}
                   <div className="p-6 grid lg:grid-cols-3 gap-8">
-                    {/* Vehicle Info */}
                     <div className="lg:col-span-1 border-r border-slate-100 pr-6">
                       <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-4"><Car size={18} className="text-blue-600"/> Vehicle</h4>
                       <div className="space-y-2">
-                        <div className="text-sm text-slate-500">Registration Number</div>
-                        <div className="text-xl font-mono font-bold text-slate-900 uppercase tracking-tight">{booking?.vehicle?.vehicleNumber}</div>
+                        <div className="text-sm text-slate-500">Registration</div>
+                        <div className="text-xl font-mono font-bold text-slate-900 uppercase">{booking?.vehicle?.vehicleNumber}</div>
                         <div className="text-sm font-medium">{booking?.vehicle?.brand} {booking?.vehicle?.model}</div>
                       </div>
                     </div>
 
-                    {/* Inspection Findings */}
                     <div className="lg:col-span-2">
                       <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-4"><ClipboardList size={18} className="text-blue-600"/> Inspection Notes</h4>
                       <div className="grid sm:grid-cols-2 gap-3 mb-4">
@@ -129,7 +152,6 @@ function AdminInspectionEstimateReport() {
                         </tbody>
                       </table>
                     </div>
-                    {/* Final Totals */}
                     <div className="mt-6 flex justify-end">
                       <div className="w-full sm:w-64 space-y-2 text-right">
                         <div className="text-sm text-slate-500">Tax: ₹{est.tax}</div>
@@ -145,11 +167,118 @@ function AdminInspectionEstimateReport() {
           </div>
         )}
       </div>
+
+      {/* Edit Modal Component */}
+      {editingItem && (
+        <EditModal 
+          item={editingItem} 
+          onClose={() => setEditingItem(null)} 
+          onSave={handleUpdate} 
+        />
+      )}
     </div>
   );
 }
 
-// Sub-component for clean status representation
+// EDIT MODAL COMPONENT
+function EditModal({ item, onClose, onSave }) {
+  const [formData, setFormData] = useState(JSON.parse(JSON.stringify(item)));
+
+  const handleItemChange = (index, field, value) => {
+    const newItems = [...formData.estimate.items];
+    newItems[index][field] = Number(value);
+    newItems[index].total = newItems[index].labourCharge + newItems[index].partsCost;
+    
+    const subTotal = newItems.reduce((acc, curr) => acc + curr.total, 0);
+    const tax = Math.round(subTotal * 0.18); // Example 18% tax logic
+    
+    setFormData({
+      ...formData,
+      estimate: { 
+        ...formData.estimate, 
+        items: newItems,
+        tax: tax,
+        grandTotal: subTotal + tax
+      }
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex justify-end">
+      <div className="bg-white w-full max-w-2xl h-full shadow-2xl overflow-y-auto p-8 animate-in slide-in-from-right">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-bold">Edit Report</h2>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full"><X /></button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Inspection Section */}
+          <section>
+            <h3 className="font-bold text-blue-600 mb-3 uppercase text-xs tracking-widest">Inspection Details</h3>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Remarks</label>
+            <textarea 
+              className="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              value={formData.inspection.remarks}
+              onChange={(e) => setFormData({...formData, inspection: {...formData.inspection, remarks: e.target.value}})}
+            />
+          </section>
+
+          {/* Estimate Items */}
+          <section>
+            <h3 className="font-bold text-blue-600 mb-3 uppercase text-xs tracking-widest">Pricing Items</h3>
+            {formData.estimate.items.map((it, idx) => (
+              <div key={idx} className="bg-slate-50 p-4 rounded-xl mb-4 space-y-3">
+                <div className="font-bold text-sm">{it.issueTitle}</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-500">Labour (₹)</label>
+                    <input 
+                      type="number" 
+                      className="w-full border rounded p-2 text-sm"
+                      value={it.labourCharge}
+                      onChange={(e) => handleItemChange(idx, 'labourCharge', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-500">Parts (₹)</label>
+                    <input 
+                      type="number" 
+                      className="w-full border rounded p-2 text-sm"
+                      value={it.partsCost}
+                      onChange={(e) => handleItemChange(idx, 'partsCost', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {/* Status Section */}
+          <section>
+            <h3 className="font-bold text-blue-600 mb-3 uppercase text-xs tracking-widest">Status</h3>
+            <select 
+              className="w-full border rounded-lg p-3 text-sm"
+              value={formData.estimate.approvalStatus}
+              onChange={(e) => setFormData({...formData, estimate: {...formData.estimate, approvalStatus: e.target.value}})}
+            >
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </section>
+
+          <button 
+            onClick={() => onSave(formData)}
+            className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-all"
+          >
+            <Save size={20}/> Save All Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StatusBadge({ status }) {
   const styles = {
     Pending: "bg-amber-100 text-amber-800 border-amber-200",
@@ -158,9 +287,9 @@ function StatusBadge({ status }) {
   };
   return (
     <span className={`px-3 py-1 rounded-full text-xs font-bold border ${styles[status] || styles.Pending}`}>
-      {status.toUpperCase()}
+      {status?.toUpperCase()}
     </span>
   );
 }
 
-export default AdminInspectionEstimateReport;
+export default InspectionEstimateReport;
