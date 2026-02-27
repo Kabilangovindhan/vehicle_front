@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Users, Car, LayoutDashboard, FileText, CreditCard, LogOut, Settings, Bell, ClipboardCheck, Wrench, Calendar, Package, Activity, MessageSquare, UserCircle, Briefcase, ShieldCheck, History, Camera } from "lucide-react";
 
-
 function Layout() {
-    
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const userRole = sessionStorage.getItem("role")?.toUpperCase() || "CUSTOMER";
@@ -38,7 +36,7 @@ function Layout() {
         ],
         ADMIN: [
             { path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
-            { path: "/layout/customer-management	", label: "Customer Management", icon: Users },
+            { path: "/layout/customer-management", label: "Customer Management", icon: Users },
             { path: "/layout/job-assignment", label: "Job Assignment", icon: Calendar },
             { path: "/layout/job-control-center", label: "Job Control Center", icon: ShieldCheck },
             { path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
