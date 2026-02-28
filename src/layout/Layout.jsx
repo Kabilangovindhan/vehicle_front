@@ -20,7 +20,7 @@ function Layout() {
             { path: "/layout/service-booking", label: "Service Booking", icon: Calendar },
             { path: "/layout/service-tracking", label: "Service Tracking", icon: Activity },
             { path: "/layout/estimates", label: "Estimates & Approval", icon: ClipboardCheck },
-            { path: "/layout/billing", label: "Billing & Invoice", icon: CreditCard },
+            { path: "/layout/invoices", label: "Billing & Invoice", icon: CreditCard },
             { path: "/layout/history", label: "Service History", icon: History },
             { path: "/layout/feedback", label: "Feedback & Support", icon: MessageSquare },
             { path: "/layout/notifications", label: "Notifications", icon: Bell },

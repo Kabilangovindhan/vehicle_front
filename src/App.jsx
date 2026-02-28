@@ -18,6 +18,7 @@ import ServiceTracking from "./pages/customer/ServiceTrackings";
 import ServiceBooking from "./pages/customer/ServiceBooking";
 import EstimateApproval from "./pages/customer/EstimateApproval";
 import CustomerProfile from "./pages/customer/CustomerProfile";
+import CustomerBillInvoice from "./pages/customer/CustomerBillInvoice";
 
 
 // Staff Routes
@@ -49,6 +50,7 @@ function App() {
 				<Route path="service-tracking" element={<ServiceTracking />} />
 				<Route path="estimates" element={<EstimateApproval />}/>
                 <Route path="profile" element={<CustomerProfile />} />
+				<Route path="invoices" element={<CustomerBillInvoice />} />
 
 				{/* Staff Routes */}
 				<Route path="inspection/:jobId" element={<InspectionReport />} />
