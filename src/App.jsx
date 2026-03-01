@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 // Common Routes
 import Login from "./pages/common/Login";
 import Layout from "./layout/Layout";
+import Dashboard from "./pages/common/Dashboard";
 
 // Admin Routes
 import CustomerManagement from "./pages/admin/CustomerManagement";
@@ -12,6 +13,7 @@ import JobControlCenter from "./pages/admin/JobControlCenter";
 import InspectionEstimationReport from "./pages/admin/InspectionEstimationReport";
 import BillingInvoice from "./pages/admin/BillingInvoice";
 import PaymentVerification from "./pages/admin/PaymentVerification";
+import ReportAnalytics from "./pages/admin/ReportAnalytics";
 
 // Customer Routes
 import MyVehicle from "./pages/customer/MyVehicle";
@@ -20,7 +22,7 @@ import ServiceBooking from "./pages/customer/ServiceBooking";
 import EstimateApproval from "./pages/customer/EstimateApproval";
 import CustomerProfile from "./pages/customer/CustomerProfile";
 import CustomerBillInvoice from "./pages/customer/CustomerBillInvoice";
-
+import ServiceHistory from "./pages/customer/ServiceHistory";
 
 // Staff Routes
 import ApprovalQueue from "./pages/staff/ApprovalQueue";
@@ -37,6 +39,7 @@ function App() {
 			{/* Common Routes */}
 			<Route path="/" element={<Login />} />
 			<Route path="/layout" element={<Layout />}>
+			<Route path="dashboard" element={<Dashboard />} />
 
 				{/* Admin Routes */}
 				<Route path="customer-management" element={<CustomerManagement />} />
@@ -45,6 +48,7 @@ function App() {
 				<Route path="inspection-estimation" element={<InspectionEstimationReport />} />
 				<Route path="billing-invoice" element={<BillingInvoice />} />
 				<Route path="payment-verification" element={<PaymentVerification />} />
+				<Route path="report-analytics" element={<ReportAnalytics />} />
 
 
 				{/* Customer Routes */}
@@ -54,6 +58,7 @@ function App() {
 				<Route path="estimates" element={<EstimateApproval />}/>
                 <Route path="profile" element={<CustomerProfile />} />
 				<Route path="invoices" element={<CustomerBillInvoice />} />
+				<Route path="service-history" element={<ServiceHistory />} />
 
 				{/* Staff Routes */}
 				<Route path="inspection/:jobId" element={<InspectionReport />} />

@@ -21,7 +21,7 @@ function Layout() {
             { path: "/layout/service-tracking", label: "Service Tracking", icon: Activity },
             { path: "/layout/estimates", label: "Estimates & Approval", icon: ClipboardCheck },
             { path: "/layout/invoices", label: "Billing & Invoice", icon: CreditCard },
-            { path: "/layout/history", label: "Service History", icon: History },
+            { path: "/layout/service-history", label: "Service History", icon: History },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
         ],
         STAFF: [
@@ -40,7 +40,7 @@ function Layout() {
             { path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
             { path: "/layout/billing-invoice", label: "Billing & Invoice", icon: CreditCard },
             { path: "/layout/payment-verification", label: "Payment Verification", icon: BadgeCheck },
-            { path: "/layout/reports", label: "Reports & Analytics", icon: Activity },
+            { path: "/layout/report-analytics", label: "Reports & Analytics", icon: Activity },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
         ],
     };
