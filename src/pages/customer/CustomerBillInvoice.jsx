@@ -7,13 +7,14 @@ function CustomerInvoice() {
     const [loading, setLoading] = useState(true);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-    const customerId = localStorage.getItem("customerId"); // from login
+    const customerId = sessionStorage.getItem("phone"); // from login
 
     useEffect(() => {
         fetchInvoices();
     }, []);
 
     const fetchInvoices = async () => {
+        console.log(customerId)
         try {
             const res = await fetch(`http://localhost:5000/api/customerInvoice/invoices/${customerId}`);
             const data = await res.json();
