@@ -23,6 +23,7 @@ import EstimateApproval from "./pages/customer/EstimateApproval";
 import CustomerProfile from "./pages/customer/CustomerProfile";
 import CustomerBillInvoice from "./pages/customer/CustomerBillInvoice";
 import ServiceHistory from "./pages/customer/ServiceHistory";
+import Feedback from "./pages/customer/Feedback";
 
 // Staff Routes
 import ApprovalQueue from "./pages/staff/ApprovalQueue";
@@ -59,6 +60,7 @@ function App() {
                 <Route path="profile" element={<CustomerProfile />} />
 				<Route path="invoices" element={<CustomerBillInvoice />} />
 				<Route path="service-history" element={<ServiceHistory />} />
+				<Route path="feedback" element={<Feedback />} />
 
 				{/* Staff Routes */}
 				<Route path="inspection/:jobId" element={<InspectionReport />} />

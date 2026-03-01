@@ -23,6 +23,7 @@ function Layout() {
             { path: "/layout/invoices", label: "Billing & Invoice", icon: CreditCard },
             { path: "/layout/service-history", label: "Service History", icon: History },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
+            { path: "/layout/feedback", label: "Feedback", icon: MessageSquare },
         ],
         STAFF: [
             { path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -31,6 +32,7 @@ function Layout() {
             { path: "/layout/service-updates", label: "Service Updates", icon: Wrench },
             { path: "/layout/work-history", label: "Work History", icon: History },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
+            { path: "/layout/feedback", label: "Feedback", icon: MessageSquare },
         ],
         ADMIN: [
             { path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -42,6 +44,7 @@ function Layout() {
             { path: "/layout/payment-verification", label: "Payment Verification", icon: BadgeCheck },
             { path: "/layout/report-analytics", label: "Reports & Analytics", icon: Activity },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
+            { path: "/layout/feedback", label: "Feedback", icon: MessageSquare },
         ],
     };
 
