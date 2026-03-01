@@ -32,7 +32,7 @@ function Layout() {
             { path: "/layout/service-updates", label: "Service Updates", icon: Wrench },
             { path: "/layout/work-history", label: "Work History", icon: History },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
-            { path: "/layout/feedback", label: "Feedback", icon: MessageSquare },
+            { path: "/layout/feedback-staff", label: "Feedback", icon: MessageSquare },
         ],
         ADMIN: [
             { path: "/layout/dashboard", label: "Dashboard", icon: LayoutDashboard },

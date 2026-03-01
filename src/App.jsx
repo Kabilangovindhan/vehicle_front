@@ -32,6 +32,7 @@ import InspectionReport from "./pages/staff/InspectionReport";
 import Estimate from "./pages/staff/Estimation";
 import AssignedJob from "./pages/staff/AssignedJob";
 import WorkHistory from "./pages/staff/StaffWorkHistory";
+import FeedbackStaff from "./pages/staff/Feedback";
 
 function App() {
 	return (
@@ -69,6 +70,7 @@ function App() {
                 <Route path="approval-queue" element={<ApprovalQueue />} />
                 <Route path="service-updates" element={<ServiceUpdate />} />
 				<Route path="work-history" element={<WorkHistory />} />
+				<Route path="feedback-staff" element={<FeedbackStaff />} />
 
 			</Route>
 		</Routes>
