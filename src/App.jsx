@@ -11,6 +11,7 @@ import JobAssignment from "./pages/admin/JobAssignment";
 import JobControlCenter from "./pages/admin/JobControlCenter";
 import InspectionEstimationReport from "./pages/admin/InspectionEstimationReport";
 import BillingInvoice from "./pages/admin/BillingInvoice";
+import PaymentVerification from "./pages/admin/PaymentVerification";
 
 // Customer Routes
 import MyVehicle from "./pages/customer/MyVehicle";
@@ -42,6 +43,7 @@ function App() {
 				<Route path="job-control-center" element={<JobControlCenter />} />
 				<Route path="inspection-estimation" element={<InspectionEstimationReport />} />
 				<Route path="billing-invoice" element={<BillingInvoice />} />
+				<Route path="payment-verification" element={<PaymentVerification />} />
 
 
 				{/* Customer Routes */}
