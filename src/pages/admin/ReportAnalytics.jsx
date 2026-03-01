@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 
 function ReportAnalytics() {
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
@@ -36,7 +37,7 @@ function ReportAnalytics() {
     const [period, setPeriod] = useState("month");
     const [reportType, setReportType] = useState("staff");
     const [showFilters, setShowFilters] = useState(false);
-    
+
     // Data states
     const [overviewData, setOverviewData] = useState(null);
     const [staffPerformance, setStaffPerformance] = useState(null);
@@ -44,10 +45,7 @@ function ReportAnalytics() {
     const [selectedStaff, setSelectedStaff] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
 
-    // Check admin authentication
     useEffect(() => {
-        const role = sessionStorage.getItem("role");
-       
         fetchOverviewData();
     }, []);
 
@@ -58,7 +56,7 @@ function ReportAnalytics() {
                 `http://localhost:5000/api/reportAnalytics/workshop-overview?period=${periodValue}`
             );
             const data = await response.json();
-            
+
             if (data.success) {
                 setOverviewData(data);
             }
@@ -75,10 +73,10 @@ function ReportAnalytics() {
             const url = dateRange.startDate && dateRange.endDate
                 ? `http://localhost:5000/api/reportAnalytics/staff-performance?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
                 : `http://localhost:5000/api/reportAnalytics/staff-performance`;
-            
+
             const response = await fetch(url);
             const data = await response.json();
-            
+
             if (data.success) {
                 setStaffPerformance(data);
             }
@@ -95,10 +93,10 @@ function ReportAnalytics() {
             const url = dateRange.startDate && dateRange.endDate
                 ? `http://localhost:5000/api/reportAnalytics/financial-report?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
                 : `http://localhost:5000/api/reportAnalytics/financial-report`;
-            
+
             const response = await fetch(url);
             const data = await response.json();
-            
+
             if (data.success) {
                 setFinancialData(data);
             }
@@ -115,10 +113,10 @@ function ReportAnalytics() {
             const url = dateRange.startDate && dateRange.endDate
                 ? `http://localhost:5000/api/reportAnalytics/staff/${staffId}/detailed?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
                 : `http://localhost:5000/api/reportAnalytics/staff/${staffId}/detailed`;
-            
+
             const response = await fetch(url);
             const data = await response.json();
-            
+
             if (data.success) {
                 setStaffDetails(data.report);
             }
@@ -148,12 +146,9 @@ function ReportAnalytics() {
     const handleExport = async () => {
         try {
             const url = `http://localhost:5000/api/reportAnalytics/export?type=${reportType}${dateRange.startDate ? `&startDate=${dateRange.startDate}` : ''}${dateRange.endDate ? `&endDate=${dateRange.endDate}` : ''}`;
-            
             const response = await fetch(url);
             const data = await response.json();
-            
             if (data.success) {
-                // Create downloadable file
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const downloadUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -199,8 +194,8 @@ function ReportAnalytics() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen">
+            <div className="max-w-7xl">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
@@ -225,11 +220,10 @@ function ReportAnalytics() {
                                     <button
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
-                                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
-                                            activeTab === tab.id
-                                                ? "bg-indigo-600 text-white"
-                                                : "text-gray-600 hover:bg-gray-100"
-                                        }`}
+                                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${activeTab === tab.id
+                                            ? "bg-indigo-600 text-white"
+                                            : "text-gray-600 hover:bg-gray-100"
+                                            }`}
                                     >
                                         <Icon className="w-4 h-4" />
                                         {tab.label}
@@ -250,7 +244,7 @@ function ReportAnalytics() {
                                 <option value="financial">Financial Report</option>
                                 <option value="complete">Complete Report</option>
                             </select>
-                            
+
                             <button
                                 onClick={handleExport}
                                 className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2 text-sm"
@@ -258,7 +252,7 @@ function ReportAnalytics() {
                                 <Download className="w-4 h-4" />
                                 Export
                             </button>
-                            
+
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
                                 className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm"
@@ -318,11 +312,10 @@ function ReportAnalytics() {
                                     <button
                                         key={p}
                                         onClick={() => handlePeriodChange(p)}
-                                        className={`px-4 py-2 rounded-xl text-sm font-medium capitalize ${
-                                            period === p
-                                                ? "bg-indigo-600 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
+                                        className={`px-4 py-2 rounded-xl text-sm font-medium capitalize ${period === p
+                                            ? "bg-indigo-600 text-white"
+                                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                            }`}
                                     >
                                         {p}
                                     </button>
@@ -379,7 +372,7 @@ function ReportAnalytics() {
                                     <span className="text-xs text-gray-500">Approval Rate</span>
                                 </div>
                                 <div className="text-3xl font-bold text-gray-900">
-                                    {overviewData.metrics.totalEstimates > 0 
+                                    {overviewData.metrics.totalEstimates > 0
                                         ? Math.round((overviewData.metrics.approvedEstimates / overviewData.metrics.totalEstimates) * 100)
                                         : 0}%
                                 </div>
@@ -438,27 +431,6 @@ function ReportAnalytics() {
                                                     }}
                                                 />
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Trend Chart (simplified) */}
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                    <TrendingUp className="w-5 h-5 text-indigo-600" />
-                                    Activity Trend
-                                </h3>
-                                <div className="h-48 flex items-end gap-2">
-                                    {overviewData.charts.trendData.slice(-7).map((day, index) => (
-                                        <div key={index} className="flex-1 flex flex-col items-center gap-2">
-                                            <div 
-                                                className="w-full bg-indigo-600 rounded-t-lg"
-                                                style={{ height: `${(day.jobs / Math.max(...overviewData.charts.trendData.map(d => d.jobs))) * 100}%` }}
-                                            />
-                                            <span className="text-xs text-gray-500 rotate-45">
-                                                {new Date(day.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
-                                            </span>
                                         </div>
                                     ))}
                                 </div>
@@ -578,11 +550,10 @@ function ReportAnalytics() {
                                                 <td className="px-6 py-4 text-gray-900">{staff.metrics.totalInspections}</td>
                                                 <td className="px-6 py-4 font-medium text-gray-900">{formatCurrency(staff.metrics.totalEarnings)}</td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                        staff.metrics.satisfactionRate >= 80 ? 'bg-green-100 text-green-700' :
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${staff.metrics.satisfactionRate >= 80 ? 'bg-green-100 text-green-700' :
                                                         staff.metrics.satisfactionRate >= 60 ? 'bg-yellow-100 text-yellow-700' :
-                                                        'bg-red-100 text-red-700'
-                                                    }`}>
+                                                            'bg-red-100 text-red-700'
+                                                        }`}>
                                                         {staff.metrics.satisfactionRate}%
                                                     </span>
                                                 </td>
@@ -621,7 +592,7 @@ function ReportAnalytics() {
                                             <XCircle className="w-6 h-6" />
                                         </button>
                                     </div>
-                                    
+
                                     <div className="p-6 space-y-6">
                                         {/* Staff Info */}
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -689,11 +660,10 @@ function ReportAnalytics() {
                                                                 </div>
                                                                 <div className="text-sm text-gray-600">{job.customer?.name}</div>
                                                             </div>
-                                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                                job.status === "Completed" ? "bg-green-100 text-green-700" :
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${job.status === "Completed" ? "bg-green-100 text-green-700" :
                                                                 job.status === "Delivered" ? "bg-blue-100 text-blue-700" :
-                                                                "bg-yellow-100 text-yellow-700"
-                                                            }`}>
+                                                                    "bg-yellow-100 text-yellow-700"
+                                                                }`}>
                                                                 {job.status}
                                                             </span>
                                                         </div>

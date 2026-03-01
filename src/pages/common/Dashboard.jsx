@@ -27,15 +27,14 @@ import {
     PieChart,
     BarChart3,
     Star,
-    History // Added missing import
+    History
 } from "lucide-react";
 
-// Chart components (simplified - in real app use recharts or similar)
 const SimpleBarChart = ({ data, dataKey, xKey, height = 200 }) => (
     <div className="h-48 flex items-end gap-2">
         {data.map((item, index) => (
             <div key={index} className="flex-1 flex flex-col items-center gap-1">
-                <div 
+                <div
                     className="w-full bg-indigo-600 rounded-t-lg transition-all hover:bg-indigo-700"
                     style={{ height: `${(item[dataKey] / Math.max(...data.map(d => d[dataKey]))) * 100}%` }}
                 />
@@ -48,7 +47,6 @@ const SimpleBarChart = ({ data, dataKey, xKey, height = 200 }) => (
 const SimplePieChart = ({ data }) => {
     const total = data.reduce((sum, item) => sum + item.value, 0);
     const colors = ['bg-indigo-600', 'bg-green-600', 'bg-yellow-600', 'bg-purple-600', 'bg-red-600'];
-    
     return (
         <div className="space-y-2">
             {data.map((item, index) => (
@@ -70,6 +68,7 @@ const SimplePieChart = ({ data }) => {
 };
 
 function Dashboard() {
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState(null);
@@ -87,14 +86,14 @@ function Dashboard() {
             return;
         }
         fetchDashboardData();
-    }, [userId]);
+    }, [userId, navigate]);
 
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
             const response = await fetch(`http://localhost:5000/api/dashboard/${userId}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 setDashboardData(data.dashboard);
             } else {
@@ -176,202 +175,50 @@ function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Sidebar */}
-            <div className={`fixed inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out z-30 lg:translate-x-0 lg:static lg:inset-0`}>
-                <div className="h-full flex flex-col">
-                    <div className="p-4 border-b border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-900">AutoCare</h2>
-                        <p className="text-sm text-gray-500 mt-1">Workshop Management</p>
-                    </div>
-                    
-                    <div className="p-4 border-b border-gray-200">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-                                <User className="w-5 h-5 text-indigo-600" />
-                            </div>
-                            <div>
-                                <p className="font-medium text-gray-900">{userName}</p>
-                                <p className="text-xs text-gray-500 capitalize">{userRole}</p>
-                            </div>
-                        </div>
-                    </div>
+        <div className="min-h-full">
+            {
+                dashboardData.role === "admin" && (
+                    <AdminDashboard
+                        data={dashboardData}
+                        formatCurrency={formatCurrency}
+                        formatDate={formatDate}
+                        getStatusColor={getStatusColor}
+                    />
+                )
+            }
 
-                    <nav className="flex-1 p-4">
-                        <ul className="space-y-2">
-                            <li>
-                                <button className="w-full flex items-center gap-3 px-4 py-2 text-indigo-600 bg-indigo-50 rounded-xl">
-                                    <LayoutDashboard className="w-5 h-5" />
-                                    <span>Dashboard</span>
-                                </button>
-                            </li>
-                            {userRole === "admin" && (
-                                <>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <Users className="w-5 h-5" />
-                                            <span>Customers</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <Briefcase className="w-5 h-5" />
-                                            <span>Staff</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <BarChart3 className="w-5 h-5" />
-                                            <span>Reports</span>
-                                        </button>
-                                    </li>
-                                </>
-                            )}
-                            {userRole === "staff" && (
-                                <>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <Wrench className="w-5 h-5" />
-                                            <span>Assigned Jobs</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <FileText className="w-5 h-5" />
-                                            <span>Inspections</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <History className="w-5 h-5" />
-                                            <span>Work History</span>
-                                        </button>
-                                    </li>
-                                </>
-                            )}
-                            {userRole === "customer" && (
-                                <>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <Car className="w-5 h-5" />
-                                            <span>My Vehicles</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <Calendar className="w-5 h-5" />
-                                            <span>Book Service</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-xl">
-                                            <History className="w-5 h-5" />
-                                            <span>Service History</span>
-                                        </button>
-                                    </li>
-                                </>
-                            )}
-                        </ul>
-                    </nav>
+            {
+                dashboardData.role === "staff" && (
+                    <StaffDashboard
+                        data={dashboardData}
+                        formatCurrency={formatCurrency}
+                        formatDate={formatDate}
+                        getStatusColor={getStatusColor}
+                    />
+                )
+            }
 
-                    <div className="p-4 border-t border-gray-200">
-                        <button
-                            onClick={handleLogout}
-                            className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl"
-                        >
-                            <LogOut className="w-5 h-5" />
-                            <span>Logout</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="lg:ml-64">
-                {/* Header */}
-                <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-                    <div className="px-4 sm:px-6 lg:px-8 py-4">
-                        <div className="flex items-center justify-between">
-                            <button
-                                onClick={() => setSidebarOpen(!sidebarOpen)}
-                                className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
-                            >
-                                <Menu className="w-6 h-6 text-gray-600" />
-                            </button>
-                            
-                            <h1 className="text-xl font-semibold text-gray-900">
-                                Welcome back, {userName}!
-                            </h1>
-
-                            <div className="flex items-center gap-3">
-                                <button className="p-2 rounded-lg hover:bg-gray-100 relative">
-                                    <Bell className="w-5 h-5 text-gray-600" />
-                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                                </button>
-                                <button className="p-2 rounded-lg hover:bg-gray-100">
-                                    <Settings className="w-5 h-5 text-gray-600" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Dashboard Content */}
-                <main className="p-4 sm:p-6 lg:p-8">
-                    {/* Role-based dashboard */}
-                    {dashboardData.role === "admin" && (
-                        <AdminDashboard 
-                            data={dashboardData} 
-                            formatCurrency={formatCurrency} 
-                            formatDate={formatDate} 
-                            getStatusColor={getStatusColor}
-                        />
-                    )}
-                    {dashboardData.role === "staff" && (
-                        <StaffDashboard 
-                            data={dashboardData} 
-                            formatCurrency={formatCurrency} 
-                            formatDate={formatDate} 
-                            getStatusColor={getStatusColor} 
-                        />
-                    )}
-                    {dashboardData.role === "customer" && (
-                        <CustomerDashboard 
-                            data={dashboardData} 
-                            formatCurrency={formatCurrency} 
-                            formatDate={formatDate} 
-                            getStatusColor={getStatusColor} 
-                        />
-                    )}
-                </main>
-            </div>
-        </div>
+            {
+                dashboardData.role === "customer" && (
+                    <CustomerDashboard
+                        data={dashboardData}
+                        formatCurrency={formatCurrency}
+                        formatDate={formatDate}
+                        getStatusColor={getStatusColor}
+                    />
+                )
+            }
+        </div >
     );
 }
 
 // Admin Dashboard Component
 function AdminDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
+
     const stats = data.stats;
-    
+
     return (
         <div className="space-y-6">
-            {/* Period Selector */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <div className="flex items-center gap-2">
-                    {["day", "week", "month", "year"].map((period) => (
-                        <button
-                            key={period}
-                            className={`px-4 py-2 rounded-xl text-sm font-medium capitalize ${
-                                period === "week" 
-                                    ? "bg-indigo-600 text-white" 
-                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                            }`}
-                        >
-                            {period}
-                        </button>
-                    ))}
-                </div>
-            </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -379,28 +226,32 @@ function AdminDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                     title="Total Customers"
                     value={stats.totalCustomers}
                     icon={Users}
-                    color="bg-blue-500"
+                    bgColor="bg-blue-500"
+                    iconColor="text-white"
                     trend={+12}
                 />
                 <StatCard
                     title="Total Staff"
                     value={stats.totalStaff}
                     icon={Briefcase}
-                    color="bg-purple-500"
+                    bgColor="bg-purple-500"
+                    iconColor="text-white"
                     trend={+2}
                 />
                 <StatCard
                     title="Total Vehicles"
                     value={stats.totalVehicles}
                     icon={Car}
-                    color="bg-green-500"
+                    bgColor="bg-green-500"
+                    iconColor="text-white"
                     trend={+8}
                 />
                 <StatCard
                     title="Today's Bookings"
                     value={stats.todayBookings}
                     icon={Calendar}
-                    color="bg-orange-500"
+                    bgColor="bg-orange-500"
+                    iconColor="text-white"
                     trend={stats.todayBookings > 5 ? +20 : -5}
                 />
             </div>
@@ -411,25 +262,29 @@ function AdminDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                     title="Today's Revenue"
                     amount={formatCurrency(stats.revenue.today)}
                     icon={DollarSign}
-                    color="bg-green-500"
+                    bgColor="bg-green-500"
+                    iconColor="text-white"
                 />
                 <RevenueCard
                     title="This Week"
                     amount={formatCurrency(stats.revenue.week)}
                     icon={TrendingUp}
-                    color="bg-blue-500"
+                    bgColor="bg-blue-500"
+                    iconColor="text-white"
                 />
                 <RevenueCard
                     title="This Month"
                     amount={formatCurrency(stats.revenue.month)}
                     icon={Activity}
-                    color="bg-purple-500"
+                    bgColor="bg-purple-500"
+                    iconColor="text-white"
                 />
                 <RevenueCard
                     title="This Year"
                     amount={formatCurrency(stats.revenue.year)}
                     icon={BarChart3}
-                    color="bg-indigo-500"
+                    bgColor="bg-indigo-500"
+                    iconColor="text-white"
                 />
             </div>
 
@@ -438,7 +293,7 @@ function AdminDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                 {/* Revenue Chart */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
-                    <SimpleBarChart 
+                    <SimpleBarChart
                         data={data.charts.revenueByDay}
                         dataKey="revenue"
                         xKey="day"
@@ -448,7 +303,7 @@ function AdminDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                 {/* Job Status Distribution */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Job Status</h3>
-                    <SimplePieChart 
+                    <SimplePieChart
                         data={data.charts.jobStatusDistribution.map(item => ({
                             name: item.status,
                             value: item.count
@@ -571,25 +426,29 @@ function StaffDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                     title="Total Jobs"
                     value={data.stats.totalJobs}
                     icon={Briefcase}
-                    color="bg-indigo-500"
+                    bgColor="bg-indigo-500"
+                    iconColor="text-white"
                 />
                 <StatCard
                     title="Today's Jobs"
                     value={data.stats.todayJobs}
                     icon={Calendar}
-                    color="bg-blue-500"
+                    bgColor="bg-blue-500"
+                    iconColor="text-white"
                 />
                 <StatCard
                     title="Completed"
                     value={data.stats.completedJobs}
                     icon={CheckCircle}
-                    color="bg-green-500"
+                    bgColor="bg-green-500"
+                    iconColor="text-white"
                 />
                 <StatCard
                     title="Urgent Jobs"
                     value={data.stats.urgentJobs}
                     icon={AlertCircle}
-                    color="bg-red-500"
+                    bgColor="bg-red-500"
+                    iconColor="text-white"
                 />
             </div>
 
@@ -599,13 +458,15 @@ function StaffDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                     title="Today's Earnings"
                     amount={formatCurrency(data.stats.earnings.today)}
                     icon={DollarSign}
-                    color="bg-green-500"
+                    bgColor="bg-green-500"
+                    iconColor="text-white"
                 />
                 <RevenueCard
                     title="Week's Earnings"
                     amount={formatCurrency(data.stats.earnings.week)}
                     icon={TrendingUp}
-                    color="bg-blue-500"
+                    bgColor="bg-blue-500"
+                    iconColor="text-white"
                 />
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-2">
@@ -637,10 +498,10 @@ function StaffDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                     {data.currentTasks.map((task) => (
                         <div key={task.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                             <div className="flex items-start gap-3">
-                                <div className={`p-2 rounded-lg ${getStatusColor(task.status)}`}>
+                                <div className={`p-2 rounded-lg ${getStatusColor(task.status).split(' ')[0]}`}>
                                     {task.status === "Working" ? <Wrench className="w-4 h-4" /> :
-                                     task.status === "Inspection" ? <FileText className="w-4 h-4" /> :
-                                     <Clock className="w-4 h-4" />}
+                                        task.status === "Inspection" ? <FileText className="w-4 h-4" /> :
+                                            <Clock className="w-4 h-4" />}
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
@@ -668,7 +529,7 @@ function StaffDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Job Status</h3>
-                    <SimplePieChart 
+                    <SimplePieChart
                         data={[
                             { name: "Pending", value: data.performance.jobsByStatus.pending },
                             { name: "In Progress", value: data.performance.jobsByStatus.inProgress },
@@ -678,7 +539,7 @@ function StaffDashboard({ data, formatCurrency, formatDate, getStatusColor }) {
                 </div>
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Priority Distribution</h3>
-                    <SimplePieChart 
+                    <SimplePieChart
                         data={[
                             { name: "Normal", value: data.performance.priority.normal },
                             { name: "Urgent", value: data.performance.priority.urgent }
@@ -716,25 +577,29 @@ function CustomerDashboard({ data, formatCurrency, formatDate, getStatusColor })
                     title="My Vehicles"
                     value={data.stats.totalVehicles}
                     icon={Car}
-                    color="bg-indigo-500"
+                    bgColor="bg-indigo-500"
+                    iconColor="text-white"
                 />
                 <StatCard
                     title="Total Services"
                     value={data.stats.totalServices}
                     icon={Wrench}
-                    color="bg-blue-500"
+                    bgColor="bg-blue-500"
+                    iconColor="text-white"
                 />
                 <StatCard
                     title="Active Services"
                     value={data.stats.activeServices}
                     icon={Activity}
-                    color="bg-yellow-500"
+                    bgColor="bg-yellow-500"
+                    iconColor="text-white"
                 />
                 <StatCard
                     title="Completed"
                     value={data.stats.completedServices}
                     icon={CheckCircle}
-                    color="bg-green-500"
+                    bgColor="bg-green-500"
+                    iconColor="text-white"
                 />
             </div>
 
@@ -744,13 +609,15 @@ function CustomerDashboard({ data, formatCurrency, formatDate, getStatusColor })
                     title="Total Spent"
                     amount={formatCurrency(data.stats.totalSpent)}
                     icon={DollarSign}
-                    color="bg-purple-500"
+                    bgColor="bg-purple-500"
+                    iconColor="text-white"
                 />
                 <RevenueCard
                     title="Pending Payments"
                     amount={formatCurrency(data.stats.pendingPayments)}
                     icon={CreditCard}
-                    color="bg-orange-500"
+                    bgColor="bg-orange-500"
+                    iconColor="text-white"
                 />
             </div>
 
@@ -784,7 +651,7 @@ function CustomerDashboard({ data, formatCurrency, formatDate, getStatusColor })
                         {data.activeServices.map((service) => (
                             <div key={service.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                                 <div className="flex items-start gap-3">
-                                    <div className={`p-2 rounded-lg ${getStatusColor(service.status)}`}>
+                                    <div className={`p-2 rounded-lg ${getStatusColor(service.status).split(' ')[0]}`}>
                                         <Wrench className="w-4 h-4" />
                                     </div>
                                     <div>
@@ -833,9 +700,7 @@ function CustomerDashboard({ data, formatCurrency, formatDate, getStatusColor })
                 <div className="space-y-4">
                     {data.recentActivity.map((activity, index) => (
                         <div key={index} className="flex items-start gap-3">
-                            <div className={`w-2 h-2 mt-2 rounded-full ${
-                                activity.type === "booking" ? "bg-blue-500" : "bg-green-500"
-                            }`}></div>
+                            <div className={`w-2 h-2 mt-2 rounded-full ${activity.type === "booking" ? "bg-blue-500" : "bg-green-500"}`}></div>
                             <div className="flex-1">
                                 <p className="text-sm text-gray-900">{activity.description}</p>
                                 <div className="flex items-center gap-2 mt-1">
@@ -877,14 +742,14 @@ function CustomerDashboard({ data, formatCurrency, formatDate, getStatusColor })
 }
 
 // Reusable Components
-function StatCard({ title, value, icon: Icon, color, trend }) {
+function StatCard({ title, value, icon: Icon, bgColor, iconColor, trend }) {
     const isPositive = trend >= 0;
-    
+
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-2">
-                <div className={`p-3 ${color} bg-opacity-10 rounded-xl`}>
-                    <Icon className={`w-5 h-5 ${color.replace('bg-', 'text-')}`} />
+                <div className={`p-3 ${bgColor} bg-opacity-10 rounded-xl`}>
+                    <Icon className={`w-5 h-5 ${iconColor}`} />
                 </div>
                 {trend !== undefined && (
                     <div className={`flex items-center gap-1 text-xs ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
@@ -899,12 +764,12 @@ function StatCard({ title, value, icon: Icon, color, trend }) {
     );
 }
 
-function RevenueCard({ title, amount, icon: Icon, color }) {
+function RevenueCard({ title, amount, icon: Icon, bgColor, iconColor }) {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-2">
-                <div className={`p-3 ${color} bg-opacity-10 rounded-xl`}>
-                    <Icon className={`w-5 h-5 ${color.replace('bg-', 'text-')}`} />
+                <div className={`p-3 ${bgColor} bg-opacity-10 rounded-xl`}>
+                    <Icon className={`w-5 h-5 ${iconColor}`} />
                 </div>
             </div>
             <p className="text-sm text-gray-500 mb-1">{title}</p>

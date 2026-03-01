@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 
 function StaffWorkHistory() {
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [workHistory, setWorkHistory] = useState(null);
@@ -56,7 +57,7 @@ function StaffWorkHistory() {
             setLoading(true);
             const response = await fetch(`http://localhost:5000/api/staffWorkHistory/${staffId}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 setWorkHistory(data);
             } else {
@@ -82,7 +83,7 @@ function StaffWorkHistory() {
                 `http://localhost:5000/api/staffWorkHistory/${staffId}/date-range?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`
             );
             const data = await response.json();
-            
+
             if (data.success) {
                 // Transform date range data to match work history format
                 const transformedData = {
@@ -156,25 +157,25 @@ function StaffWorkHistory() {
 
     const filterJobs = (jobs) => {
         if (!jobs) return [];
-        
+
         return jobs.filter(job => {
             // Status filter
             if (statusFilter !== "all" && job.jobStatus !== statusFilter) {
                 return false;
             }
-            
+
             // Search filter
             if (searchTerm) {
                 const searchLower = searchTerm.toLowerCase();
                 const customerName = job.booking?.customer?.name?.toLowerCase() || "";
                 const vehicleNumber = job.booking?.vehicle?.vehicleNumber?.toLowerCase() || "";
                 const jobId = job.jobId?.toString().toLowerCase() || "";
-                
-                return customerName.includes(searchLower) || 
-                       vehicleNumber.includes(searchLower) || 
-                       jobId.includes(searchLower);
+
+                return customerName.includes(searchLower) ||
+                    vehicleNumber.includes(searchLower) ||
+                    jobId.includes(searchLower);
             }
-            
+
             return true;
         });
     };
@@ -210,7 +211,7 @@ function StaffWorkHistory() {
     const filteredJobs = filterJobs(workHistory.workHistory || []);
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -275,11 +276,10 @@ function StaffWorkHistory() {
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`px-4 py-2 text-sm font-medium capitalize transition-all relative ${
-                                activeTab === tab
-                                    ? "text-indigo-600"
-                                    : "text-gray-500 hover:text-gray-700"
-                            }`}
+                            className={`px-4 py-2 text-sm font-medium capitalize transition-all relative ${activeTab === tab
+                                ? "text-indigo-600"
+                                : "text-gray-500 hover:text-gray-700"
+                                }`}
                         >
                             {tab}
                             {activeTab === tab && (
@@ -417,7 +417,7 @@ function StaffWorkHistory() {
                                                     <Wrench className="w-5 h-5" />
                                                 )}
                                             </div>
-                                            
+
                                             <div>
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <span className="text-gray-900 font-medium">
@@ -425,7 +425,7 @@ function StaffWorkHistory() {
                                                     </span>
                                                     {getPriorityBadge(job.priority)}
                                                 </div>
-                                                
+
                                                 <div className="flex flex-wrap items-center gap-3 text-sm">
                                                     <span className="flex items-center gap-1 text-gray-600">
                                                         <User className="w-3 h-3" />
@@ -535,10 +535,9 @@ function StaffWorkHistory() {
                                                                 </div>
                                                                 <div className="flex justify-between text-sm">
                                                                     <span className="text-gray-600">Status:</span>
-                                                                    <span className={`font-medium ${
-                                                                        estimate.approvalStatus === "Approved" ? "text-green-600" :
+                                                                    <span className={`font-medium ${estimate.approvalStatus === "Approved" ? "text-green-600" :
                                                                         estimate.approvalStatus === "Rejected" ? "text-red-600" : "text-yellow-600"
-                                                                    }`}>
+                                                                        }`}>
                                                                         {estimate.approvalStatus}
                                                                     </span>
                                                                 </div>
@@ -570,9 +569,8 @@ function StaffWorkHistory() {
                                                                 </div>
                                                                 <div className="flex justify-between text-sm">
                                                                     <span className="text-gray-600">Payment:</span>
-                                                                    <span className={`font-medium ${
-                                                                        invoice.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"
-                                                                    }`}>
+                                                                    <span className={`font-medium ${invoice.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"
+                                                                        }`}>
                                                                         {invoice.paymentStatus}
                                                                     </span>
                                                                 </div>

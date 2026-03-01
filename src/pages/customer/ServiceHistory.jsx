@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 
 function ServiceHistory() {
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [serviceHistory, setServiceHistory] = useState(null);
@@ -61,7 +62,7 @@ function ServiceHistory() {
             setLoading(true);
             const response = await fetch(`http://localhost:5000/api/serviceHistory/${customerId}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 setServiceHistory(data);
             } else {
@@ -79,7 +80,7 @@ function ServiceHistory() {
         try {
             const response = await fetch(`http://localhost:5000/api/serviceHistory/${customerId}/analytics`);
             const data = await response.json();
-            
+
             if (data.success) {
                 setAnalytics(data.analytics);
             }
@@ -100,7 +101,7 @@ function ServiceHistory() {
                 `http://localhost:5000/api/serviceHistory/${customerId}/date-range?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`
             );
             const data = await response.json();
-            
+
             if (data.success) {
                 // Show date range results in a modal or new view
                 alert(`Found ${data.summary.totalServices} services in this period. Total spent: ₹${data.summary.totalSpent}`);
@@ -119,7 +120,7 @@ function ServiceHistory() {
                 `http://localhost:5000/api/serviceHistory/${customerId}/vehicle/${vehicleId}`
             );
             const data = await response.json();
-            
+
             if (data.success) {
                 setSelectedVehicle(data);
             }
@@ -185,7 +186,7 @@ function ServiceHistory() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -273,7 +274,7 @@ function ServiceHistory() {
                                 <span className="text-xs text-gray-500">Approval Rate</span>
                             </div>
                             <div className="text-3xl font-bold text-gray-900">
-                                {serviceHistory.summary.totalEstimates > 0 
+                                {serviceHistory.summary.totalEstimates > 0
                                     ? Math.round((serviceHistory.summary.approvedEstimates / serviceHistory.summary.totalEstimates) * 100)
                                     : 0}%
                             </div>
@@ -287,11 +288,10 @@ function ServiceHistory() {
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`px-4 py-2 text-sm font-medium capitalize transition-all relative ${
-                                activeTab === tab
+                            className={`px-4 py-2 text-sm font-medium capitalize transition-all relative ${activeTab === tab
                                     ? "text-indigo-600"
                                     : "text-gray-500 hover:text-gray-700"
-                            }`}
+                                }`}
                         >
                             {tab}
                             {activeTab === tab && (
@@ -364,243 +364,241 @@ function ServiceHistory() {
                 {activeTab === "overview" && serviceHistory?.vehicles && (
                     <div className="space-y-6">
                         {serviceHistory.vehicles
-                            .filter(vehicle => 
+                            .filter(vehicle =>
                                 vehicle.vehicleNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
                                 vehicle.brand.toLowerCase().includes(searchTerm.toLowerCase())
                             )
                             .map((vehicle) => (
-                            <div key={vehicle.vehicleId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                                {/* Vehicle Header */}
-                                <div className="p-6 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between">
-                                        <div className="flex items-start gap-4">
-                                            <div className="p-3 bg-indigo-100 rounded-xl">
-                                                <Car className="w-6 h-6 text-indigo-600" />
-                                            </div>
-                                            <div>
-                                                <h2 className="text-xl font-bold text-gray-900">
-                                                    {vehicle.brand} {vehicle.model}
-                                                </h2>
-                                                <div className="flex flex-wrap items-center gap-3 mt-1">
-                                                    <span className="text-lg font-semibold text-indigo-600">
-                                                        {vehicle.vehicleNumber}
-                                                    </span>
-                                                    <span className="text-sm text-gray-500">•</span>
-                                                    <span className="text-sm text-gray-600">{vehicle.fuelType}</span>
-                                                    <span className="text-sm text-gray-500">•</span>
-                                                    <span className="text-sm text-gray-600">{vehicle.transmission}</span>
-                                                    {vehicle.color && (
-                                                        <>
-                                                            <span className="text-sm text-gray-500">•</span>
-                                                            <span className="text-sm text-gray-600">{vehicle.color}</span>
-                                                        </>
-                                                    )}
+                                <div key={vehicle.vehicleId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                    {/* Vehicle Header */}
+                                    <div className="p-6 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between">
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-3 bg-indigo-100 rounded-xl">
+                                                    <Car className="w-6 h-6 text-indigo-600" />
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 md:mt-0 flex gap-3">
-                                            <button
-                                                onClick={() => fetchVehicleHistory(vehicle.vehicleId)}
-                                                className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 text-sm"
-                                            >
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Vehicle Stats */}
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                                        <div>
-                                            <div className="text-sm text-gray-500">Total Services</div>
-                                            <div className="text-lg font-semibold text-gray-900">{vehicle.stats.totalBookings}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm text-gray-500">Completed</div>
-                                            <div className="text-lg font-semibold text-green-600">{vehicle.stats.completedJobs}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm text-gray-500">Total Spent</div>
-                                            <div className="text-lg font-semibold text-gray-900">{formatCurrency(vehicle.stats.totalSpent)}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm text-gray-500">Last Service</div>
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {vehicle.stats.lastService ? formatDate(vehicle.stats.lastService) : "No service yet"}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Service History List */}
-                                <div className="divide-y divide-gray-200">
-                                    {vehicle.serviceHistory.map((booking) => (
-                                        <div key={booking.bookingId} className="p-4">
-                                            <div
-                                                className="flex items-start justify-between cursor-pointer"
-                                                onClick={() => toggleBookingExpansion(booking.bookingId)}
-                                            >
-                                                <div className="flex items-start gap-3">
-                                                    <div className={`p-2 rounded-lg ${getStatusColor(booking.bookingStatus)}`}>
-                                                        {booking.bookingStatus === "Approved" ? (
-                                                            <CheckCircle className="w-4 h-4" />
-                                                        ) : booking.bookingStatus === "Pending" ? (
-                                                            <Clock className="w-4 h-4" />
-                                                        ) : (
-                                                            <AlertCircle className="w-4 h-4" />
+                                                <div>
+                                                    <h2 className="text-xl font-bold text-gray-900">
+                                                        {vehicle.brand} {vehicle.model}
+                                                    </h2>
+                                                    <div className="flex flex-wrap items-center gap-3 mt-1">
+                                                        <span className="text-lg font-semibold text-indigo-600">
+                                                            {vehicle.vehicleNumber}
+                                                        </span>
+                                                        <span className="text-sm text-gray-500">•</span>
+                                                        <span className="text-sm text-gray-600">{vehicle.fuelType}</span>
+                                                        <span className="text-sm text-gray-500">•</span>
+                                                        <span className="text-sm text-gray-600">{vehicle.transmission}</span>
+                                                        {vehicle.color && (
+                                                            <>
+                                                                <span className="text-sm text-gray-500">•</span>
+                                                                <span className="text-sm text-gray-600">{vehicle.color}</span>
+                                                            </>
                                                         )}
                                                     </div>
-                                                    <div>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-medium text-gray-900">
-                                                                {booking.serviceType}
-                                                            </span>
-                                                            <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(booking.bookingStatus)}`}>
-                                                                {booking.bookingStatus}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
-                                                            <span className="flex items-center gap-1">
-                                                                <Calendar className="w-3 h-3" />
-                                                                {formatDate(booking.bookingDate)}
-                                                            </span>
-                                                            {booking.appointmentDate && (
-                                                                <>
-                                                                    <span>•</span>
-                                                                    <span className="flex items-center gap-1">
-                                                                        <Clock className="w-3 h-3" />
-                                                                        Appt: {formatDate(booking.appointmentDate)}
-                                                                    </span>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-sm font-medium text-gray-900">
-                                                        {booking.jobs.length} job{booking.jobs.length !== 1 ? 's' : ''}
-                                                    </span>
-                                                    {expandedBookings[booking.bookingId] ? (
-                                                        <ChevronUp className="w-4 h-4 text-gray-500" />
-                                                    ) : (
-                                                        <ChevronDown className="w-4 h-4 text-gray-500" />
-                                                    )}
                                                 </div>
                                             </div>
+                                            <div className="mt-4 md:mt-0 flex gap-3">
+                                                <button
+                                                    onClick={() => fetchVehicleHistory(vehicle.vehicleId)}
+                                                    className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 text-sm"
+                                                >
+                                                    View Details
+                                                </button>
+                                            </div>
+                                        </div>
 
-                                            {/* Expanded Booking Details */}
-                                            {expandedBookings[booking.bookingId] && (
-                                                <div className="mt-4 pl-11 space-y-4">
-                                                    {booking.problemDescription && (
-                                                        <div className="bg-gray-50 rounded-lg p-3">
-                                                            <p className="text-sm text-gray-600">
-                                                                <span className="font-medium">Issue:</span> {booking.problemDescription}
-                                                            </p>
+                                        {/* Vehicle Stats */}
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                                            <div>
+                                                <div className="text-sm text-gray-500">Total Services</div>
+                                                <div className="text-lg font-semibold text-gray-900">{vehicle.stats.totalBookings}</div>
+                                            </div>
+                                            <div>
+                                                <div className="text-sm text-gray-500">Completed</div>
+                                                <div className="text-lg font-semibold text-green-600">{vehicle.stats.completedJobs}</div>
+                                            </div>
+                                            <div>
+                                                <div className="text-sm text-gray-500">Total Spent</div>
+                                                <div className="text-lg font-semibold text-gray-900">{formatCurrency(vehicle.stats.totalSpent)}</div>
+                                            </div>
+                                            <div>
+                                                <div className="text-sm text-gray-500">Last Service</div>
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    {vehicle.stats.lastService ? formatDate(vehicle.stats.lastService) : "No service yet"}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Service History List */}
+                                    <div className="divide-y divide-gray-200">
+                                        {vehicle.serviceHistory.map((booking) => (
+                                            <div key={booking.bookingId} className="p-4">
+                                                <div
+                                                    className="flex items-start justify-between cursor-pointer"
+                                                    onClick={() => toggleBookingExpansion(booking.bookingId)}
+                                                >
+                                                    <div className="flex items-start gap-3">
+                                                        <div className={`p-2 rounded-lg ${getStatusColor(booking.bookingStatus)}`}>
+                                                            {booking.bookingStatus === "Approved" ? (
+                                                                <CheckCircle className="w-4 h-4" />
+                                                            ) : booking.bookingStatus === "Pending" ? (
+                                                                <Clock className="w-4 h-4" />
+                                                            ) : (
+                                                                <AlertCircle className="w-4 h-4" />
+                                                            )}
                                                         </div>
-                                                    )}
-
-                                                    {booking.jobs.map((job) => (
-                                                        <div key={job.jobId} className="bg-gray-50 rounded-lg p-3">
-                                                            <div className="flex items-start justify-between">
-                                                                <div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="font-medium text-gray-900">Job #{job.jobId.toString().slice(-6)}</span>
-                                                                        <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(job.jobStatus)}`}>
-                                                                            {job.jobStatus}
-                                                                        </span>
-                                                                        {job.priority === "Urgent" && (
-                                                                            <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
-                                                                                Urgent
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                    <div className="mt-2 text-sm text-gray-600">
-                                                                        <span>Staff: {job.assignedStaff}</span>
-                                                                    </div>
-                                                                </div>
+                                                        <div>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-medium text-gray-900">
+                                                                    {booking.serviceType}
+                                                                </span>
+                                                                <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(booking.bookingStatus)}`}>
+                                                                    {booking.bookingStatus}
+                                                                </span>
                                                             </div>
-
-                                                            {/* Inspections */}
-                                                            {job.inspections.length > 0 && (
-                                                                <div className="mt-3">
-                                                                    <p className="text-xs font-medium text-gray-500 mb-1">Inspections:</p>
-                                                                    {job.inspections.map((inspection, idx) => (
-                                                                        <div key={idx} className="text-sm">
-                                                                            {inspection.issuesFound.map((issue, i) => (
-                                                                                <div key={i} className="text-gray-600 text-xs ml-2">
-                                                                                    • {issue.title}: {issue.description}
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-
-                                                            {/* Estimates */}
-                                                            {job.estimates.length > 0 && (
-                                                                <div className="mt-3">
-                                                                    <p className="text-xs font-medium text-gray-500 mb-1">Estimates:</p>
-                                                                    {job.estimates.map((estimate, idx) => (
-                                                                        <div key={idx} className="bg-white rounded p-2">
-                                                                            <div className="flex justify-between text-sm">
-                                                                                <span className="text-gray-600">Total:</span>
-                                                                                <span className="font-medium">{formatCurrency(estimate.grandTotal)}</span>
-                                                                            </div>
-                                                                            <div className="flex justify-between text-sm">
-                                                                                <span className="text-gray-600">Status:</span>
-                                                                                <span className={`font-medium ${
-                                                                                    estimate.approvalStatus === "Approved" ? "text-green-600" :
-                                                                                    estimate.approvalStatus === "Rejected" ? "text-red-600" : "text-yellow-600"
-                                                                                }`}>
-                                                                                    {estimate.approvalStatus}
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-
-                                                            {/* Invoices */}
-                                                            {job.invoices.length > 0 && (
-                                                                <div className="mt-3">
-                                                                    <p className="text-xs font-medium text-gray-500 mb-1">Invoice:</p>
-                                                                    {job.invoices.map((invoice, idx) => (
-                                                                        <div key={idx} className="bg-white rounded p-2">
-                                                                            <div className="flex justify-between text-sm">
-                                                                                <span className="text-gray-600">Amount:</span>
-                                                                                <span className="font-medium">{formatCurrency(invoice.grandTotal)}</span>
-                                                                            </div>
-                                                                            <div className="flex justify-between text-sm">
-                                                                                <span className="text-gray-600">Payment:</span>
-                                                                                <span className={`font-medium ${
-                                                                                    invoice.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"
-                                                                                }`}>
-                                                                                    {invoice.paymentStatus}
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-
-                                                            {/* Timeline */}
-                                                            <div className="mt-3 flex items-center gap-3 text-xs text-gray-500">
-                                                                <span>Started: {formatDate(job.startTime)}</span>
-                                                                {job.endTime && (
+                                                            <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
+                                                                <span className="flex items-center gap-1">
+                                                                    <Calendar className="w-3 h-3" />
+                                                                    {formatDate(booking.bookingDate)}
+                                                                </span>
+                                                                {booking.appointmentDate && (
                                                                     <>
                                                                         <span>•</span>
-                                                                        <span>Completed: {formatDate(job.endTime)}</span>
+                                                                        <span className="flex items-center gap-1">
+                                                                            <Clock className="w-3 h-3" />
+                                                                            Appt: {formatDate(booking.appointmentDate)}
+                                                                        </span>
                                                                     </>
                                                                 )}
                                                             </div>
                                                         </div>
-                                                    ))}
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-sm font-medium text-gray-900">
+                                                            {booking.jobs.length} job{booking.jobs.length !== 1 ? 's' : ''}
+                                                        </span>
+                                                        {expandedBookings[booking.bookingId] ? (
+                                                            <ChevronUp className="w-4 h-4 text-gray-500" />
+                                                        ) : (
+                                                            <ChevronDown className="w-4 h-4 text-gray-500" />
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                    ))}
+
+                                                {/* Expanded Booking Details */}
+                                                {expandedBookings[booking.bookingId] && (
+                                                    <div className="mt-4 pl-11 space-y-4">
+                                                        {booking.problemDescription && (
+                                                            <div className="bg-gray-50 rounded-lg p-3">
+                                                                <p className="text-sm text-gray-600">
+                                                                    <span className="font-medium">Issue:</span> {booking.problemDescription}
+                                                                </p>
+                                                            </div>
+                                                        )}
+
+                                                        {booking.jobs.map((job) => (
+                                                            <div key={job.jobId} className="bg-gray-50 rounded-lg p-3">
+                                                                <div className="flex items-start justify-between">
+                                                                    <div>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="font-medium text-gray-900">Job #{job.jobId.toString().slice(-6)}</span>
+                                                                            <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(job.jobStatus)}`}>
+                                                                                {job.jobStatus}
+                                                                            </span>
+                                                                            {job.priority === "Urgent" && (
+                                                                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
+                                                                                    Urgent
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="mt-2 text-sm text-gray-600">
+                                                                            <span>Staff: {job.assignedStaff}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Inspections */}
+                                                                {job.inspections.length > 0 && (
+                                                                    <div className="mt-3">
+                                                                        <p className="text-xs font-medium text-gray-500 mb-1">Inspections:</p>
+                                                                        {job.inspections.map((inspection, idx) => (
+                                                                            <div key={idx} className="text-sm">
+                                                                                {inspection.issuesFound.map((issue, i) => (
+                                                                                    <div key={i} className="text-gray-600 text-xs ml-2">
+                                                                                        • {issue.title}: {issue.description}
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Estimates */}
+                                                                {job.estimates.length > 0 && (
+                                                                    <div className="mt-3">
+                                                                        <p className="text-xs font-medium text-gray-500 mb-1">Estimates:</p>
+                                                                        {job.estimates.map((estimate, idx) => (
+                                                                            <div key={idx} className="bg-white rounded p-2">
+                                                                                <div className="flex justify-between text-sm">
+                                                                                    <span className="text-gray-600">Total:</span>
+                                                                                    <span className="font-medium">{formatCurrency(estimate.grandTotal)}</span>
+                                                                                </div>
+                                                                                <div className="flex justify-between text-sm">
+                                                                                    <span className="text-gray-600">Status:</span>
+                                                                                    <span className={`font-medium ${estimate.approvalStatus === "Approved" ? "text-green-600" :
+                                                                                            estimate.approvalStatus === "Rejected" ? "text-red-600" : "text-yellow-600"
+                                                                                        }`}>
+                                                                                        {estimate.approvalStatus}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Invoices */}
+                                                                {job.invoices.length > 0 && (
+                                                                    <div className="mt-3">
+                                                                        <p className="text-xs font-medium text-gray-500 mb-1">Invoice:</p>
+                                                                        {job.invoices.map((invoice, idx) => (
+                                                                            <div key={idx} className="bg-white rounded p-2">
+                                                                                <div className="flex justify-between text-sm">
+                                                                                    <span className="text-gray-600">Amount:</span>
+                                                                                    <span className="font-medium">{formatCurrency(invoice.grandTotal)}</span>
+                                                                                </div>
+                                                                                <div className="flex justify-between text-sm">
+                                                                                    <span className="text-gray-600">Payment:</span>
+                                                                                    <span className={`font-medium ${invoice.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"
+                                                                                        }`}>
+                                                                                        {invoice.paymentStatus}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Timeline */}
+                                                                <div className="mt-3 flex items-center gap-3 text-xs text-gray-500">
+                                                                    <span>Started: {formatDate(job.startTime)}</span>
+                                                                    {job.endTime && (
+                                                                        <>
+                                                                            <span>•</span>
+                                                                            <span>Completed: {formatDate(job.endTime)}</span>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
                     </div>
                 )}
 
@@ -620,12 +618,12 @@ function ServiceHistory() {
                                         View Details →
                                     </button>
                                 </div>
-                                
+
                                 <h3 className="text-lg font-bold text-gray-900 mb-1">
                                     {vehicle.brand} {vehicle.model}
                                 </h3>
                                 <p className="text-indigo-600 font-medium mb-3">{vehicle.vehicleNumber}</p>
-                                
+
                                 <div className="grid grid-cols-2 gap-3 mb-4">
                                     <div>
                                         <div className="text-xs text-gray-500">Year</div>
@@ -752,11 +750,10 @@ function ServiceHistory() {
                             <div className="space-y-6">
                                 {serviceHistory.recentActivity.map((activity, index) => (
                                     <div key={index} className="relative pl-10">
-                                        <div className={`absolute left-2 w-4 h-4 rounded-full border-2 border-white ${
-                                            activity.jobStatus === "Completed" ? "bg-green-500" :
-                                            activity.jobStatus === "Delivered" ? "bg-blue-500" :
-                                            "bg-yellow-500"
-                                        }`} />
+                                        <div className={`absolute left-2 w-4 h-4 rounded-full border-2 border-white ${activity.jobStatus === "Completed" ? "bg-green-500" :
+                                                activity.jobStatus === "Delivered" ? "bg-blue-500" :
+                                                    "bg-yellow-500"
+                                            }`} />
                                         <div className="bg-gray-50 rounded-lg p-4">
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
@@ -798,7 +795,7 @@ function ServiceHistory() {
                                     <XCircle className="w-6 h-6" />
                                 </button>
                             </div>
-                            
+
                             <div className="p-6 space-y-6">
                                 {/* Vehicle Info */}
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -854,7 +851,7 @@ function ServiceHistory() {
                                                 </div>
                                                 <span className="text-sm text-gray-500">{formatDate(service.date)}</span>
                                             </div>
-                                            
+
                                             {service.problemDescription && (
                                                 <p className="text-sm text-gray-600 mb-3">
                                                     <span className="font-medium">Issue:</span> {service.problemDescription}
@@ -872,9 +869,8 @@ function ServiceHistory() {
                                                 </div>
                                                 <div>
                                                     <div className="text-xs text-gray-500">Payment</div>
-                                                    <div className={`font-medium ${
-                                                        service.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"
-                                                    }`}>
+                                                    <div className={`font-medium ${service.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"
+                                                        }`}>
                                                         {service.paymentStatus}
                                                     </div>
                                                 </div>

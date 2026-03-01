@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 function PaymentVerification() {
+
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -63,7 +64,7 @@ function PaymentVerification() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     paymentStatus: status,
                     verifiedBy: sessionStorage.getItem("userId") || "admin",
                     verifiedAt: new Date()
@@ -71,10 +72,10 @@ function PaymentVerification() {
             });
 
             const data = await response.json();
-            
+
             if (response.ok) {
                 alert(`Payment ${status === 'Paid' ? 'verified' : 'rejected'} successfully`);
-                fetchAllInvoices(); // Refresh the list
+                fetchAllInvoices();
                 setSelectedInvoice(null);
             } else {
                 alert(data.message || 'Verification failed');
@@ -110,7 +111,6 @@ function PaymentVerification() {
 
         const matchesStatus = statusFilter === "all" || invoice.paymentStatus === statusFilter;
 
-        // Date range filter
         let matchesDate = true;
         if (dateRange.from && dateRange.to) {
             const invoiceDate = new Date(invoice.createdAt);
@@ -140,8 +140,8 @@ function PaymentVerification() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans">
-            <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="min-h-screen font-sans">
+            <div className="">
                 {/* Header Section */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
@@ -223,7 +223,7 @@ function PaymentVerification() {
                                     className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                                 />
                             </div>
-                            
+
                             <div className="relative">
                                 <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                                 <select
@@ -287,16 +287,14 @@ function PaymentVerification() {
                                     {/* Invoice Header */}
                                     <div className="flex flex-col lg:flex-row justify-between items-start gap-4 mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className={`p-2.5 rounded-xl ${
-                                                invoice.paymentStatus === 'Paid' 
-                                                    ? 'bg-emerald-50' 
-                                                    : 'bg-amber-50'
-                                            }`}>
-                                                <Receipt className={`${
-                                                    invoice.paymentStatus === 'Paid' 
-                                                        ? 'text-emerald-600' 
-                                                        : 'text-amber-600'
-                                                }`} size={22} />
+                                            <div className={`p-2.5 rounded-xl ${invoice.paymentStatus === 'Paid'
+                                                ? 'bg-emerald-50'
+                                                : 'bg-amber-50'
+                                                }`}>
+                                                <Receipt className={`${invoice.paymentStatus === 'Paid'
+                                                    ? 'text-emerald-600'
+                                                    : 'text-amber-600'
+                                                    }`} size={22} />
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2 mb-1">
@@ -447,11 +445,10 @@ function VerificationModal({ invoice, onClose, onVerify }) {
                 <div className="p-6 max-h-[70vh] overflow-y-auto">
                     <div className="space-y-6">
                         {/* Status Banner */}
-                        <div className={`p-4 rounded-xl flex items-center gap-3 ${
-                            invoice.paymentStatus === 'Paid'
-                                ? 'bg-emerald-50'
-                                : 'bg-amber-50'
-                        }`}>
+                        <div className={`p-4 rounded-xl flex items-center gap-3 ${invoice.paymentStatus === 'Paid'
+                            ? 'bg-emerald-50'
+                            : 'bg-amber-50'
+                            }`}>
                             {invoice.paymentStatus === 'Paid' ? (
                                 <CheckCircle2 className="text-emerald-600" size={24} />
                             ) : (
