@@ -22,8 +22,6 @@ function Layout() {
             { path: "/layout/estimates", label: "Estimates & Approval", icon: ClipboardCheck },
             { path: "/layout/invoices", label: "Billing & Invoice", icon: CreditCard },
             { path: "/layout/history", label: "Service History", icon: History },
-            { path: "/layout/feedback", label: "Feedback & Support", icon: MessageSquare },
-            { path: "/layout/notifications", label: "Notifications", icon: Bell },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
         ],
         STAFF: [

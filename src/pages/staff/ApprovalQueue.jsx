@@ -133,8 +133,8 @@ function ApprovalQueue() {
                                             {/* NEW: Estimate Status Column */}
                                             <td className="px-6 py-5">
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border ${job.estimateStatus === 'Approved'
-                                                        ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
-                                                        : 'bg-amber-50 border-amber-100 text-amber-600'
+                                                    ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                                                    : 'bg-amber-50 border-amber-100 text-amber-600'
                                                     }`}>
                                                     <span className={`w-1.5 h-1.5 rounded-full mr-2 ${job.estimateStatus === 'Approved' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
                                                         }`} />
