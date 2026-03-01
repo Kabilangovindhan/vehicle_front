@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
     Receipt, X, FileText, Download, Eye, Calendar,
     Truck, User, DollarSign, CreditCard, CheckCircle2,
-    Clock, AlertCircle, Search, Filter, Printer
+    Clock, AlertCircle, Search, Filter, Printer,
+    Wallet, Smartphone, CreditCard as CardIcon, IndianRupee
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -31,6 +32,17 @@ function CustomerInvoice() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePaymentSuccess = (updatedInvoice) => {
+        // Update the invoice in the list
+        setInvoices(prevInvoices => 
+            prevInvoices.map(inv => 
+                inv._id === updatedInvoice._id ? updatedInvoice : inv
+            )
+        );
+        // Close the modal
+        setSelectedInvoice(null);
     };
 
     const getStatusColor = (status) => {
@@ -244,6 +256,7 @@ function CustomerInvoice() {
                     <InvoiceModal
                         invoice={selectedInvoice}
                         onClose={() => setSelectedInvoice(null)}
+                        onPaymentSuccess={handlePaymentSuccess}
                     />
                 )}
             </AnimatePresence>
@@ -266,15 +279,323 @@ function DetailItem({ icon, label, value, highlight = false }) {
     );
 }
 
+// Payment Options Component
+function PaymentOptions({ invoice, onPaymentComplete, onCancel }) {
+    const [selectedMethod, setSelectedMethod] = useState(null);
+    const [upiId, setUpiId] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
+    const [cardName, setCardName] = useState('');
+    const [cardExpiry, setCardExpiry] = useState('');
+    const [cardCvv, setCardCvv] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const paymentMethods = [
+        { id: 'Cash', name: 'Cash', icon: Wallet, color: 'emerald' },
+        { id: 'UPI', name: 'UPI', icon: Smartphone, color: 'blue' },
+        { id: 'Card', name: 'Card', icon: CardIcon, color: 'purple' },
+    ];
+
+    const handlePayment = async () => {
+        setIsProcessing(true);
+        
+        // Validate based on method
+        if (selectedMethod === 'UPI' && !upiId) {
+            alert('Please enter UPI ID');
+            setIsProcessing(false);
+            return;
+        }
+        
+        if (selectedMethod === 'Card') {
+            if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
+                alert('Please fill all card details');
+                setIsProcessing(false);
+                return;
+            }
+            if (cardNumber.replace(/\s/g, '').length !== 16) {
+                alert('Please enter valid 16-digit card number');
+                setIsProcessing(false);
+                return;
+            }
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/customerInvoice/pay/${invoice._id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    paymentMethod: selectedMethod, // Now sending "Cash", "UPI", or "Card"
+                    paymentDetails: selectedMethod === 'UPI' ? { upiId } : 
+                                   selectedMethod === 'Card' ? { 
+                                       cardNumber: cardNumber.slice(-4), // Only store last 4 digits
+                                       cardHolderName: cardName 
+                                   } : {}
+                }),
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert(`Payment successful via ${selectedMethod}`);
+                onPaymentComplete(data.invoice);
+            } else {
+                alert(data.message || 'Payment failed');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            alert('Payment processing failed');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const formatCardNumber = (value) => {
+        const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        const matches = v.match(/\d{4,16}/g);
+        const match = matches && matches[0] || '';
+        const parts = [];
+        
+        for (let i = 0; i < match.length; i += 4) {
+            parts.push(match.substring(i, i + 4));
+        }
+        
+        if (parts.length) {
+            return parts.join(' ');
+        } else {
+            return value;
+        }
+    };
+
+    const formatExpiry = (value) => {
+        const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        if (v.length >= 2) {
+            return v.slice(0, 2) + '/' + v.slice(2, 4);
+        }
+        return v;
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="mt-4 bg-white rounded-xl border border-slate-200 overflow-hidden"
+        >
+            <div className="p-4 bg-gradient-to-r from-emerald-50 to-blue-50 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Wallet className="text-emerald-600" size={20} />
+                        <h3 className="font-semibold text-slate-900">Select Payment Method</h3>
+                    </div>
+                    <button
+                        onClick={onCancel}
+                        className="p-1 hover:bg-slate-200 rounded-lg transition-colors"
+                    >
+                        <X size={18} className="text-slate-500" />
+                    </button>
+                </div>
+                <p className="text-sm text-slate-600 mt-1">
+                    Amount to pay: <span className="font-bold text-emerald-600">₹{invoice.grandTotal?.toLocaleString()}</span>
+                </p>
+            </div>
+
+            <div className="p-4">
+                {/* Payment Method Selection */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                    {paymentMethods.map((method) => {
+                        const Icon = method.icon;
+                        const isSelected = selectedMethod === method.id;
+                        const colorClasses = {
+                            emerald: isSelected ? 'bg-emerald-600 text-white border-emerald-600' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50',
+                            blue: isSelected ? 'bg-blue-600 text-white border-blue-600' : 'border-blue-200 text-blue-600 hover:bg-blue-50',
+                            purple: isSelected ? 'bg-purple-600 text-white border-purple-600' : 'border-purple-200 text-purple-600 hover:bg-purple-50'
+                        };
+
+                        return (
+                            <button
+                                key={method.id}
+                                onClick={() => setSelectedMethod(method.id)}
+                                className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${colorClasses[method.color]}`}
+                            >
+                                <Icon size={24} />
+                                <span className="text-xs font-medium">{method.name}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {/* Payment Details Forms */}
+                <AnimatePresence mode="wait">
+                    {selectedMethod === 'Cash' && (
+                        <motion.div
+                            key="cash"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                                <div className="flex items-center gap-3">
+                                    <IndianRupee className="text-amber-600" size={24} />
+                                    <div>
+                                        <p className="font-medium text-amber-800">Cash Payment</p>
+                                        <p className="text-sm text-amber-600">Pay ₹{invoice.grandTotal?.toLocaleString()} in cash at our service center</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {selectedMethod === 'UPI' && (
+                        <motion.div
+                            key="upi"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Enter UPI ID
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={upiId}
+                                        onChange={(e) => setUpiId(e.target.value)}
+                                        placeholder="example@upi"
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                                    />
+                                </div>
+                                <div className="p-3 bg-blue-50 rounded-lg">
+                                    <p className="text-xs text-blue-600">
+                                        Enter your UPI ID to complete the payment. You'll receive a payment request on your UPI app.
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {selectedMethod === 'Card' && (
+                        <motion.div
+                            key="card"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Card Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={cardNumber}
+                                        onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                                        placeholder="1234 5678 9012 3456"
+                                        maxLength="19"
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Cardholder Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={cardName}
+                                        onChange={(e) => setCardName(e.target.value)}
+                                        placeholder="JOHN DOE"
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 uppercase"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            Expiry
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={cardExpiry}
+                                            onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
+                                            placeholder="MM/YY"
+                                            maxLength="5"
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            CVV
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={cardCvv}
+                                            onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
+                                            placeholder="123"
+                                            maxLength="3"
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Payment Button */}
+                {selectedMethod && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="mt-4"
+                    >
+                        <button
+                            onClick={handlePayment}
+                            disabled={isProcessing}
+                            className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${
+                                isProcessing 
+                                    ? 'bg-slate-400 cursor-not-allowed' 
+                                    : selectedMethod === 'Cash'
+                                        ? 'bg-emerald-600 hover:bg-emerald-700'
+                                        : selectedMethod === 'UPI'
+                                            ? 'bg-blue-600 hover:bg-blue-700'
+                                            : 'bg-purple-600 hover:bg-purple-700'
+                            }`}
+                        >
+                            {isProcessing ? (
+                                <div className="flex items-center justify-center gap-2">
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    Processing...
+                                </div>
+                            ) : (
+                                `Pay ₹${invoice.grandTotal?.toLocaleString()} via ${selectedMethod}`
+                            )}
+                        </button>
+                    </motion.div>
+                )}
+            </div>
+        </motion.div>
+    );
+}
+
 // Invoice Modal Component
-function InvoiceModal({ invoice, onClose }) {
+function InvoiceModal({ invoice, onClose, onPaymentSuccess }) {
     const [isPrinting, setIsPrinting] = useState(false);
+    const [showPayment, setShowPayment] = useState(false);
 
     const handlePrint = () => {
         setIsPrinting(true);
         window.print();
         setTimeout(() => setIsPrinting(false), 1000);
     };
+
+    const handlePaymentComplete = (updatedInvoice) => {
+        onPaymentSuccess(updatedInvoice);
+    };
+
+    const canPay = invoice.paymentStatus !== 'Paid' && invoice.paymentStatus !== 'Cancelled';
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -323,12 +644,13 @@ function InvoiceModal({ invoice, onClose }) {
                 <div className="p-6 max-h-[70vh] overflow-y-auto">
                     <div className="space-y-6">
                         {/* Status Banner */}
-                        <div className={`p-4 rounded-xl flex items-center gap-3 ${invoice.paymentStatus === 'Paid'
-                            ? 'bg-emerald-50'
-                            : invoice.paymentStatus === 'Pending'
-                                ? 'bg-amber-50'
-                                : 'bg-rose-50'
-                            }`}>
+                        <div className={`p-4 rounded-xl flex items-center gap-3 ${
+                            invoice.paymentStatus === 'Paid'
+                                ? 'bg-emerald-50'
+                                : invoice.paymentStatus === 'Pending'
+                                    ? 'bg-amber-50'
+                                    : 'bg-rose-50'
+                        }`}>
                             {invoice.paymentStatus === 'Paid' ? (
                                 <CheckCircle2 className="text-emerald-600" size={24} />
                             ) : invoice.paymentStatus === 'Pending' ? (
@@ -336,7 +658,7 @@ function InvoiceModal({ invoice, onClose }) {
                             ) : (
                                 <AlertCircle className="text-rose-600" size={24} />
                             )}
-                            <div>
+                            <div className="flex-1">
                                 <p className="font-semibold text-slate-900">
                                     Payment Status: {invoice.paymentStatus}
                                 </p>
@@ -348,7 +670,24 @@ function InvoiceModal({ invoice, onClose }) {
                                             : 'This invoice has been cancelled.'}
                                 </p>
                             </div>
+                            {canPay && !showPayment && (
+                                <button
+                                    onClick={() => setShowPayment(true)}
+                                    className="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
+                                >
+                                    Make Payment
+                                </button>
+                            )}
                         </div>
+
+                        {/* Payment Options */}
+                        {showPayment && (
+                            <PaymentOptions
+                                invoice={invoice}
+                                onPaymentComplete={handlePaymentComplete}
+                                onCancel={() => setShowPayment(false)}
+                            />
+                        )}
 
                         {/* Customer and Vehicle Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -429,6 +768,12 @@ function InvoiceModal({ invoice, onClose }) {
                                     <span>Grand Total</span>
                                     <span className="text-emerald-400">₹{invoice.grandTotal?.toLocaleString()}</span>
                                 </div>
+                                {invoice.paymentMethod && (
+                                    <div className="mt-2 pt-2 border-t border-slate-700 text-sm">
+                                        <span className="text-slate-400">Payment Method: </span>
+                                        <span className="font-medium text-emerald-400 uppercase">{invoice.paymentMethod}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
