@@ -44,7 +44,7 @@ function Layout() {
             { path: "/layout/payment-verification", label: "Payment Verification", icon: BadgeCheck },
             { path: "/layout/report-analytics", label: "Reports & Analytics", icon: Activity },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
-            { path: "/layout/feedback", label: "Feedback", icon: MessageSquare },
+            { path: "/layout/feedback-admin", label: "Feedback", icon: MessageSquare },
         ],
     };
 
