@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Users, Car, LayoutDashboard, FileText, CreditCard, LogOut, Settings, Bell, ClipboardCheck, Wrench, Calendar, Package, Activity, MessageSquare, UserCircle, Briefcase, ShieldCheck, History, Camera } from "lucide-react";
+import { Menu, X, Users, Car, LayoutDashboard, FileText, CreditCard, LogOut, BadgeCheck, Bell, ClipboardCheck, Wrench, Calendar, Package, Activity, MessageSquare, UserCircle, Briefcase, ShieldCheck, History, Camera } from "lucide-react";
 
 function Layout() {
     const [open, setOpen] = useState(false);
@@ -39,6 +39,7 @@ function Layout() {
             { path: "/layout/job-control-center", label: "Job Control Center", icon: ShieldCheck },
             { path: "/layout/inspection-estimation", label: "Inspection & Estimation", icon: FileText },
             { path: "/layout/billing-invoice", label: "Billing & Invoice", icon: CreditCard },
+            { path: "/layout/payment-verification", label: "Payment Verification", icon: BadgeCheck },
             { path: "/layout/reports", label: "Reports & Analytics", icon: Activity },
             { path: "/layout/profile", label: "Profile", icon: UserCircle },
         ],
